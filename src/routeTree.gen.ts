@@ -8,68 +8,90 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-
-// Create Virtual Routes
-
-const IndexLazyImport = createFileRoute('/')()
+import { Route as AuthRouteImport } from './routes/_auth/route'
+import { Route as AuthIndexImport } from './routes/_auth/index'
 
 // Create/Update Routes
 
-const IndexLazyRoute = IndexLazyImport.update({
+const AuthRouteRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/': {
+      id: '/_auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteRouteChildren {
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
+  '': typeof AuthRouteRouteWithChildren
+  '/': typeof AuthIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
+  '/': typeof AuthIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
+  '/_auth': typeof AuthRouteRouteWithChildren
+  '/_auth/': typeof AuthIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '' | '/'
   fileRoutesByTo: FileRoutesByTo
   to: '/'
-  id: '__root__' | '/'
+  id: '__root__' | '/_auth' | '/_auth/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -82,11 +104,18 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/_auth"
       ]
     },
-    "/": {
-      "filePath": "index.lazy.tsx"
+    "/_auth": {
+      "filePath": "_auth/route.tsx",
+      "children": [
+        "/_auth/"
+      ]
+    },
+    "/_auth/": {
+      "filePath": "_auth/index.tsx",
+      "parent": "/_auth"
     }
   }
 }
