@@ -17,11 +17,11 @@ const Index = () => {
           login ?
           <div>
             <LoginForm />
-            <p>Already have an account? <span onClick={() => { setLogin(!login) }}>Log in</span></p>
+            <p>Not a member? <span onClick={() => { setLogin(!login) }}>Sign up</span></p>
           </div> :
           <div>
             <Signup />
-            <p>Not a member? <span onClick={() => { setLogin(!login) }}>Sign up</span></p>
+            <p>Already have an account? <span onClick={() => { setLogin(!login) }}>Log in</span></p>
           </div>
         }
       </div>

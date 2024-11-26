@@ -1,6 +1,11 @@
-import React, { useReducer } from "react"
+import React, { useReducer, useState } from "react"
+import { login } from "../../utils/ChatAPI"
+import { useNavigate } from "@tanstack/react-router"
 
 const LoginForm = () => {
+  const navigate = useNavigate()
+  const [errors, setErrors] = useState<string[]>([])
+
   const [credientials, dispatchCredentials] = useReducer((state: { email: string, password: string }, action: { type: string, value: string }) => {
     switch (action.type) {
       case 'email':
@@ -17,8 +22,16 @@ const LoginForm = () => {
     dispatchCredentials({type: e.target.name, value: e.target.value})
   }
 
-  const formSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setErrors([])
+    try {
+      await login(credientials)
+      navigate({ to: "/self" })
+    } catch (err: any) {
+      console.log(err)
+      setErrors(err)
+    }
   }
 
   return (
@@ -29,6 +42,7 @@ const LoginForm = () => {
         <input type="password" placeholder="Password" name="password" onChange={formChangeHandler} value={credientials.password} />
         <input type="submit" value="Log in" />
       </form>
+      <p>{errors}</p>
     </div>
   )
 }
