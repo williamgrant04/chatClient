@@ -14,6 +14,7 @@ interface signupReponse {
   errors?: string[]
 }
 
+//* USER AUTH
 export const signup = (credentials: { email: string, username: string, password: string }) => {
   return new Promise<signupReponse>(async (resolve, reject) => {
     try {
@@ -50,7 +51,7 @@ export const login = (credentials: { email: string, password: string }) => {
   })
 }
 
-export const logout = async () => {
+export const logout = () => {
   return new Promise(async (resolve, reject) => {
     const response = await axios.delete("http://localhost:3000/logout", {
       headers: {
@@ -66,6 +67,45 @@ export const loggedin = () => {
   return new Promise<{ logged_in: boolean, user?: User }>(async (resolve, reject) => {
     try {
       const response = await axios.get("http://localhost:3000/loggedin", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
+//* SERVERS
+export const getServers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get("http://localhost:3000/servers", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
+export const newServer = (name: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.post("http://localhost:3000/servers/new", {
+        server: {
+          name
+        }
+      }, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
