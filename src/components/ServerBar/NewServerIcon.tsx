@@ -27,7 +27,7 @@ const NewServerIcon = () => {
     <>
       <ReactModal isOpen={modalOpen}>
         <h2>Create a new server</h2>
-        <p onClick={handleModalClick}>X</p>
+        <p onClick={handleModalClick}>X</p> {/* Temporary close button */}
         <form onSubmit={handleServerSubmit}>
           <input type="text" placeholder="Server name" value={serverName} onChange={handleInputChange} />
           <input type="submit" value="Create" />

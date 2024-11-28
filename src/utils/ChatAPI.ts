@@ -118,3 +118,21 @@ export const newServer = (name: string) => {
     }
   })
 }
+
+//* CHANNELS
+export const getChannels = (serverId: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/server/${serverId}/channels`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}

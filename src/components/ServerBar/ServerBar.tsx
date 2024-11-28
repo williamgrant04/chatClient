@@ -12,7 +12,7 @@ const ServerBar = (props: any) => {
       {
         props.servers.map((server: any) => {
           return (
-            <ServerIcon key={server.id}/>
+            <ServerIcon key={server.id} server={server}/>
           )
         })
       }

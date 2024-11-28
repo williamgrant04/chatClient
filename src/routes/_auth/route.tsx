@@ -7,7 +7,7 @@ export const Route = createFileRoute('/_auth')({
     if (!res.logged_in && window.location.pathname !== '/') {
       throw redirect({ to: '/' })
     } else if (res.logged_in && window.location.pathname === '/') {
-      throw redirect({ to: '/self' })
+      throw redirect({ to: '/server/self' })
     }
   },
   component: RouteComponent,

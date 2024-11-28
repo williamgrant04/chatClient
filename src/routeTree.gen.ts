@@ -13,8 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexImport } from './routes/_auth/index'
-import { Route as AuthServersRouteImport } from './routes/_auth/_servers/route'
-import { Route as AuthServersSelfImport } from './routes/_auth/_servers/self'
+import { Route as AuthServerRouteImport } from './routes/_auth/server/route'
+import { Route as AuthServerSelfImport } from './routes/_auth/server/self'
+import { Route as AuthServerServerIdRouteImport } from './routes/_auth/server/$serverId/route'
+import { Route as AuthServerServerIdChannelIdRouteImport } from './routes/_auth/server/$serverId/$channelId/route'
 
 // Create/Update Routes
 
@@ -29,16 +31,30 @@ const AuthIndexRoute = AuthIndexImport.update({
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
-const AuthServersRouteRoute = AuthServersRouteImport.update({
-  id: '/_servers',
+const AuthServerRouteRoute = AuthServerRouteImport.update({
+  id: '/server',
+  path: '/server',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 
-const AuthServersSelfRoute = AuthServersSelfImport.update({
+const AuthServerSelfRoute = AuthServerSelfImport.update({
   id: '/self',
   path: '/self',
-  getParentRoute: () => AuthServersRouteRoute,
+  getParentRoute: () => AuthServerRouteRoute,
 } as any)
+
+const AuthServerServerIdRouteRoute = AuthServerServerIdRouteImport.update({
+  id: '/$serverId',
+  path: '/$serverId',
+  getParentRoute: () => AuthServerRouteRoute,
+} as any)
+
+const AuthServerServerIdChannelIdRouteRoute =
+  AuthServerServerIdChannelIdRouteImport.update({
+    id: '/$channelId',
+    path: '/$channelId',
+    getParentRoute: () => AuthServerServerIdRouteRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -51,11 +67,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/_servers': {
-      id: '/_auth/_servers'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthServersRouteImport
+    '/_auth/server': {
+      id: '/_auth/server'
+      path: '/server'
+      fullPath: '/server'
+      preLoaderRoute: typeof AuthServerRouteImport
       parentRoute: typeof AuthRouteImport
     }
     '/_auth/': {
@@ -65,36 +81,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexImport
       parentRoute: typeof AuthRouteImport
     }
-    '/_auth/_servers/self': {
-      id: '/_auth/_servers/self'
+    '/_auth/server/$serverId': {
+      id: '/_auth/server/$serverId'
+      path: '/$serverId'
+      fullPath: '/server/$serverId'
+      preLoaderRoute: typeof AuthServerServerIdRouteImport
+      parentRoute: typeof AuthServerRouteImport
+    }
+    '/_auth/server/self': {
+      id: '/_auth/server/self'
       path: '/self'
-      fullPath: '/self'
-      preLoaderRoute: typeof AuthServersSelfImport
-      parentRoute: typeof AuthServersRouteImport
+      fullPath: '/server/self'
+      preLoaderRoute: typeof AuthServerSelfImport
+      parentRoute: typeof AuthServerRouteImport
+    }
+    '/_auth/server/$serverId/$channelId': {
+      id: '/_auth/server/$serverId/$channelId'
+      path: '/$channelId'
+      fullPath: '/server/$serverId/$channelId'
+      preLoaderRoute: typeof AuthServerServerIdChannelIdRouteImport
+      parentRoute: typeof AuthServerServerIdRouteImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface AuthServersRouteRouteChildren {
-  AuthServersSelfRoute: typeof AuthServersSelfRoute
+interface AuthServerServerIdRouteRouteChildren {
+  AuthServerServerIdChannelIdRouteRoute: typeof AuthServerServerIdChannelIdRouteRoute
 }
 
-const AuthServersRouteRouteChildren: AuthServersRouteRouteChildren = {
-  AuthServersSelfRoute: AuthServersSelfRoute,
+const AuthServerServerIdRouteRouteChildren: AuthServerServerIdRouteRouteChildren =
+  {
+    AuthServerServerIdChannelIdRouteRoute:
+      AuthServerServerIdChannelIdRouteRoute,
+  }
+
+const AuthServerServerIdRouteRouteWithChildren =
+  AuthServerServerIdRouteRoute._addFileChildren(
+    AuthServerServerIdRouteRouteChildren,
+  )
+
+interface AuthServerRouteRouteChildren {
+  AuthServerServerIdRouteRoute: typeof AuthServerServerIdRouteRouteWithChildren
+  AuthServerSelfRoute: typeof AuthServerSelfRoute
 }
 
-const AuthServersRouteRouteWithChildren =
-  AuthServersRouteRoute._addFileChildren(AuthServersRouteRouteChildren)
+const AuthServerRouteRouteChildren: AuthServerRouteRouteChildren = {
+  AuthServerServerIdRouteRoute: AuthServerServerIdRouteRouteWithChildren,
+  AuthServerSelfRoute: AuthServerSelfRoute,
+}
+
+const AuthServerRouteRouteWithChildren = AuthServerRouteRoute._addFileChildren(
+  AuthServerRouteRouteChildren,
+)
 
 interface AuthRouteRouteChildren {
-  AuthServersRouteRoute: typeof AuthServersRouteRouteWithChildren
+  AuthServerRouteRoute: typeof AuthServerRouteRouteWithChildren
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthServersRouteRoute: AuthServersRouteRouteWithChildren,
+  AuthServerRouteRoute: AuthServerRouteRouteWithChildren,
   AuthIndexRoute: AuthIndexRoute,
 }
 
@@ -103,36 +151,56 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 )
 
 export interface FileRoutesByFullPath {
-  '': typeof AuthServersRouteRouteWithChildren
+  '': typeof AuthRouteRouteWithChildren
+  '/server': typeof AuthServerRouteRouteWithChildren
   '/': typeof AuthIndexRoute
-  '/self': typeof AuthServersSelfRoute
+  '/server/$serverId': typeof AuthServerServerIdRouteRouteWithChildren
+  '/server/self': typeof AuthServerSelfRoute
+  '/server/$serverId/$channelId': typeof AuthServerServerIdChannelIdRouteRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof AuthServersRouteRouteWithChildren
+  '/server': typeof AuthServerRouteRouteWithChildren
   '/': typeof AuthIndexRoute
-  '/self': typeof AuthServersSelfRoute
+  '/server/$serverId': typeof AuthServerServerIdRouteRouteWithChildren
+  '/server/self': typeof AuthServerSelfRoute
+  '/server/$serverId/$channelId': typeof AuthServerServerIdChannelIdRouteRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteRouteWithChildren
-  '/_auth/_servers': typeof AuthServersRouteRouteWithChildren
+  '/_auth/server': typeof AuthServerRouteRouteWithChildren
   '/_auth/': typeof AuthIndexRoute
-  '/_auth/_servers/self': typeof AuthServersSelfRoute
+  '/_auth/server/$serverId': typeof AuthServerServerIdRouteRouteWithChildren
+  '/_auth/server/self': typeof AuthServerSelfRoute
+  '/_auth/server/$serverId/$channelId': typeof AuthServerServerIdChannelIdRouteRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/' | '/self'
+  fullPaths:
+    | ''
+    | '/server'
+    | '/'
+    | '/server/$serverId'
+    | '/server/self'
+    | '/server/$serverId/$channelId'
   fileRoutesByTo: FileRoutesByTo
-  to: '' | '/' | '/self'
+  to:
+    | '/server'
+    | '/'
+    | '/server/$serverId'
+    | '/server/self'
+    | '/server/$serverId/$channelId'
   id:
     | '__root__'
     | '/_auth'
-    | '/_auth/_servers'
+    | '/_auth/server'
     | '/_auth/'
-    | '/_auth/_servers/self'
+    | '/_auth/server/$serverId'
+    | '/_auth/server/self'
+    | '/_auth/server/$serverId/$channelId'
   fileRoutesById: FileRoutesById
 }
 
@@ -160,24 +228,36 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth/route.tsx",
       "children": [
-        "/_auth/_servers",
+        "/_auth/server",
         "/_auth/"
       ]
     },
-    "/_auth/_servers": {
-      "filePath": "_auth/_servers/route.tsx",
+    "/_auth/server": {
+      "filePath": "_auth/server/route.tsx",
       "parent": "/_auth",
       "children": [
-        "/_auth/_servers/self"
+        "/_auth/server/$serverId",
+        "/_auth/server/self"
       ]
     },
     "/_auth/": {
       "filePath": "_auth/index.tsx",
       "parent": "/_auth"
     },
-    "/_auth/_servers/self": {
-      "filePath": "_auth/_servers/self.tsx",
-      "parent": "/_auth/_servers"
+    "/_auth/server/$serverId": {
+      "filePath": "_auth/server/$serverId/route.tsx",
+      "parent": "/_auth/server",
+      "children": [
+        "/_auth/server/$serverId/$channelId"
+      ]
+    },
+    "/_auth/server/self": {
+      "filePath": "_auth/server/self.tsx",
+      "parent": "/_auth/server"
+    },
+    "/_auth/server/$serverId/$channelId": {
+      "filePath": "_auth/server/$serverId/$channelId/route.tsx",
+      "parent": "/_auth/server/$serverId"
     }
   }
 }
