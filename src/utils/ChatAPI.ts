@@ -1,3 +1,5 @@
+// TODO: FIX TYPING FOR PROMISES
+
 import axios from "axios"
 
 interface User {
@@ -133,6 +135,46 @@ export const getChannels = (serverId: string) => {
       resolve(response.data)
     } catch (error: any) {
       reject(error.response.data)
+    }
+  })
+}
+
+//* MESSAGES
+export const getMessages = (channelId: string) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/channel/${channelId}/messages`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
+// This returns a boolean, because the message object comes from the subscription and not the API
+export const sendMessage = (content: string, channelId: string) => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/channel/${channelId}/messages/new`, {
+        message: {
+          content
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(true)
+    } catch (error: any) {
+      reject(false)
     }
   })
 }

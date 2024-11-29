@@ -1,4 +1,4 @@
-import Channel from "./Channel"
+import ChannelDetails from "./ChannelDetails"
 
 const ChannelSidebar = ({ channels }: { channels: any }) => {
 
@@ -7,7 +7,7 @@ const ChannelSidebar = ({ channels }: { channels: any }) => {
       <h2>Channel Sidebar</h2>
       {channels.map((channel: any) => {
         return (
-          <Channel key={channel.id} channel={channel}/>
+          <ChannelDetails key={channel.id} channel={channel}/>
         )
       })}
     </div>

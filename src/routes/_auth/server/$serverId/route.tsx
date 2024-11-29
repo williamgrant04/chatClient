@@ -8,6 +8,8 @@ export const Route = createFileRoute('/_auth/server/$serverId')({
     const channels = await getChannels(params[2]) // $serverId
     return channels
   },
+  gcTime: 0,
+  shouldReload: false,
   component: RouteComponent,
 })
 
