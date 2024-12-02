@@ -11,10 +11,10 @@ export const Route = createFileRoute('/_auth/server/$serverId')({
   },
   gcTime: 0,
   shouldReload: false,
-  component: RouteComponent,
+  component: ChannelLayout,
 })
 
-function RouteComponent() {
+function ChannelLayout() {
   const loaderData = Route.useLoaderData() as { channels: Channel[] }
 
   return (

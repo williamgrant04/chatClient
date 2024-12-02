@@ -2,6 +2,7 @@ import ServerIcon from "./ServerIcon"
 import DmIcon from "./DmIcon"
 import NewServerIcon from "./NewServerIcon"
 import { Server } from "../../utils/APITypes"
+import UserDetails from "../User/UserDetails"
 
 const ServerBar = ({ servers }: { servers: Server[] }) => {
   // console.log(props)
@@ -17,6 +18,7 @@ const ServerBar = ({ servers }: { servers: Server[] }) => {
           )
         })
       }
+      <UserDetails />
     </div>
   )
 }

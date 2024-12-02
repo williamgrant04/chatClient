@@ -7,10 +7,6 @@ const MessageBar = () => {
 
   const [message, setMessage] = useState("")
 
-  const messageChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value)
-  }
-
   const messageSubmitHandler = (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
     sendMessage(message, params.channelId)
@@ -20,7 +16,7 @@ const MessageBar = () => {
   return (
     <div>
       <form onSubmit={messageSubmitHandler}>
-        <input type="text" value={message} onChange={messageChangeHandler} />
+        <input type="text" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} />
         <input type="submit" value="Send" />
       </form>
     </div>

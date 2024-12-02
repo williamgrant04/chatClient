@@ -8,10 +8,10 @@ export const Route = createFileRoute('/_auth/server')({
     const data = (await getServers())
     return data
   },
-  component: Layout,
+  component: ServerLayout,
 })
 
-function Layout() {
+function ServerLayout() {
   const loaderData = Route.useLoaderData() as { servers: Server[] }
 
   return (

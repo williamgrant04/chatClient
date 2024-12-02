@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client'
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { UserContextProvider } from './context/UserContext.tsx';
 
 import { routeTree } from './routeTree.gen.ts';
 
@@ -12,5 +13,7 @@ declare module "@tanstack/react-router" {
 }
 
 createRoot(document.getElementById('root')!).render(
+  <UserContextProvider>
     <RouterProvider router={router} />
+  </UserContextProvider>
 )

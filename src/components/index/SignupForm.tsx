@@ -1,8 +1,10 @@
-import React, { useReducer, useState } from "react"
+import React, { useContext, useReducer, useState } from "react"
 import { signup } from "../../utils/ChatAPI"
 import { useNavigate } from "@tanstack/react-router"
+import userContext from "../../context/UserContext"
 
 const SignupForm = () => {
+  const user = useContext(userContext)
   const [errors, setErrors] = useState<string[]>([])
   const navigate = useNavigate()
 
@@ -28,7 +30,8 @@ const SignupForm = () => {
     e.preventDefault()
     setErrors([])
     try {
-      await signup(credientials)
+      const res = await signup(credientials)
+      user.setUser(res.user)
       navigate({ to: "/server/self" })
     } catch (err: any) {
       setErrors(err.errors)

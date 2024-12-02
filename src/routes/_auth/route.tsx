@@ -1,18 +1,30 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createFileRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { loggedin } from '../../utils/ChatAPI'
+import { useContext, useEffect } from 'react'
+import userContext from '../../context/UserContext'
 
 export const Route = createFileRoute('/_auth')({
-  beforeLoad: async () => {
+  loader: async () => {
     const res = await loggedin()
-    if (!res.logged_in && window.location.pathname !== '/') {
-      throw redirect({ to: '/' })
-    } else if (res.logged_in && window.location.pathname === '/') {
-      throw redirect({ to: '/server/self' })
-    }
+    return res
   },
-  component: RouteComponent,
+  component: AuthLoader,
 })
 
-function RouteComponent() {
+function AuthLoader() {
+  const navigate = useNavigate()
+  const user = useContext(userContext)
+  const loaderData = Route.useLoaderData()
+
+  useEffect(() => {
+    if (!loaderData.logged_in && window.location.pathname !== '/') {
+      user.setUser(undefined)
+      navigate({ to: '/' })
+    } else if (loaderData.logged_in && window.location.pathname === '/') {
+      user.setUser(loaderData.user!) // Non-null assertion here because the above condition checks this, if this is null something went really wrong
+      navigate({ to: '/server/self' })
+    }
+  }, [])
+
   return <Outlet />
 }
