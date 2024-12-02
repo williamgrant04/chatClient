@@ -1,9 +1,11 @@
-const ServerHover = ({ server, show }: {server: any, show: boolean}) => {
+import { Server } from "../../utils/APITypes"
+
+const ServerHover = ({ server, show }: {server: Server, show: boolean}) => {
 
   return (
     <div style = {{ display: show ? "block" : "none" }}>
       <h1>{server.name}</h1>
-      <p>{server.createdAt}</p>
+      <p>{server.created}</p>
     </div>
   )
 }

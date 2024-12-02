@@ -1,26 +1,16 @@
-// TODO: FIX TYPING FOR PROMISES
-
 import axios from "axios"
-
-interface User {
-  id: number,
-  email: string,
-  username: string,
-  created_at: string,
-  updated_at: string,
-  jti: string
-}
-
-interface signupReponse {
+const baseUrl = "http://localhost:3000"
+import { Channel, Message, Server, User } from "./APITypes"
+interface userResponse {
   user?: User,
   errors?: string[]
 }
 
 //* USER AUTH
 export const signup = (credentials: { email: string, username: string, password: string }) => {
-  return new Promise<signupReponse>(async (resolve, reject) => {
+  return new Promise<userResponse>(async (resolve, reject) => {
     try {
-      const response = await axios.post("http://localhost:3000/signup", {
+      const response = await axios.post(`${baseUrl}/signup`, {
         user: {
           ...credentials
         }
@@ -36,9 +26,9 @@ export const signup = (credentials: { email: string, username: string, password:
 }
 
 export const login = (credentials: { email: string, password: string }) => {
-  return new Promise<signupReponse>(async (resolve, reject) => {
+  return new Promise<userResponse>(async (resolve, reject) => {
     try {
-      const response = await axios.post("http://localhost:3000/login", {
+      const response = await axios.post(`${baseUrl}/login`, {
         user: {
           ...credentials
         }
@@ -55,7 +45,7 @@ export const login = (credentials: { email: string, password: string }) => {
 
 export const logout = () => {
   return new Promise(async (resolve, reject) => {
-    const response = await axios.delete("http://localhost:3000/logout", {
+    const response = await axios.delete(`${baseUrl}/logout`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
@@ -68,7 +58,7 @@ export const logout = () => {
 export const loggedin = () => {
   return new Promise<{ logged_in: boolean, user?: User }>(async (resolve, reject) => {
     try {
-      const response = await axios.get("http://localhost:3000/loggedin", {
+      const response = await axios.get(`${baseUrl}/loggedin`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -84,9 +74,9 @@ export const loggedin = () => {
 
 //* SERVERS
 export const getServers = () => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<Server[]>(async (resolve, reject) => {
     try {
-      const response = await axios.get("http://localhost:3000/servers", {
+      const response = await axios.get(`${baseUrl}/servers`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -101,9 +91,9 @@ export const getServers = () => {
 }
 
 export const newServer = (name: string) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<Server>(async (resolve, reject) => {
     try {
-      const response = await axios.post("http://localhost:3000/servers/new", {
+      const response = await axios.post(`${baseUrl}/servers/new`, {
         server: {
           name
         }
@@ -123,9 +113,9 @@ export const newServer = (name: string) => {
 
 //* CHANNELS
 export const getChannels = (serverId: string) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<Channel[]>(async (resolve, reject) => {
     try {
-      const response = await axios.get(`http://localhost:3000/server/${serverId}/channels`, {
+      const response = await axios.get(`${baseUrl}/server/${serverId}/channels`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -141,9 +131,9 @@ export const getChannels = (serverId: string) => {
 
 //* MESSAGES
 export const getMessages = (channelId: string) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise<Message[]>(async (resolve, reject) => {
     try {
-      const response = await axios.get(`http://localhost:3000/channel/${channelId}/messages`, {
+      const response = await axios.get(`${baseUrl}/channel/${channelId}/messages`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
@@ -161,7 +151,7 @@ export const getMessages = (channelId: string) => {
 export const sendMessage = (content: string, channelId: string) => {
   return new Promise<boolean>(async (resolve, reject) => {
     try {
-      const response = await axios.post(`http://localhost:3000/channel/${channelId}/messages/new`, {
+      const response = await axios.post(`${baseUrl}/channel/${channelId}/messages/new`, {
         message: {
           content
         }

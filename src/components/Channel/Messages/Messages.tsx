@@ -1,14 +1,15 @@
 import { useParams } from "@tanstack/react-router";
 import { createConsumer } from "@rails/actioncable";
 import { useEffect, useState } from "react";
+import { Message } from "../../../utils/APITypes";
 
 const cable = createConsumer("ws://localhost:3000/cable")
 
-const Messages = (props: { messages: any[] }) => {
+const Messages = (props: { messages: Message[] }) => {
   const [messages, setMessages] = useState(props.messages)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
-  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data) => setMessages([...messages, data]) })
+  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data: Message) => setMessages([...messages, data]) })
 
   useEffect(() => {
     setMessages(props.messages)

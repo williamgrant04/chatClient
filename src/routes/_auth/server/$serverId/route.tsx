@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, } from '@tanstack/react-router'
 import ChannelSidebar from '../../../../components/ChannelSidebar/ChannelSidebar'
 import { getChannels } from '../../../../utils/ChatAPI'
+import { Channel } from '../../../../utils/APITypes'
 
 export const Route = createFileRoute('/_auth/server/$serverId')({
   loader: async () => {
@@ -14,7 +15,7 @@ export const Route = createFileRoute('/_auth/server/$serverId')({
 })
 
 function RouteComponent() {
-  const loaderData = Route.useLoaderData() as any
+  const loaderData = Route.useLoaderData() as { channels: Channel[] }
 
   return (
     <>

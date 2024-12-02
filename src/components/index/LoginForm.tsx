@@ -27,7 +27,7 @@ const LoginForm = () => {
     setErrors([])
     try {
       await login(credientials)
-      navigate({ to: "/self" })
+      navigate({ to: "/server/self" })
     } catch (err: any) {
       console.log(err)
       setErrors(err)

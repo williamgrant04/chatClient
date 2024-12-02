@@ -1,8 +1,9 @@
 import ServerIcon from "./ServerIcon"
 import DmIcon from "./DmIcon"
 import NewServerIcon from "./NewServerIcon"
+import { Server } from "../../utils/APITypes"
 
-const ServerBar = (props: any) => {
+const ServerBar = ({ servers }: { servers: Server[] }) => {
   // console.log(props)
 
   return (
@@ -10,7 +11,7 @@ const ServerBar = (props: any) => {
       <DmIcon />
       <NewServerIcon />
       {
-        props.servers.map((server: any) => {
+        servers.map((server: Server) => {
           return (
             <ServerIcon key={server.id} server={server}/>
           )

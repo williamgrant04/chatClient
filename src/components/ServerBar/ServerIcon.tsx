@@ -1,8 +1,9 @@
 import { useState } from "react"
 import ServerHover from "./ServerHover"
 import { Link } from "@tanstack/react-router"
+import { Server } from "../../utils/APITypes"
 
-const ServerIcon = ({ server }: { server: any }) => {
+const ServerIcon = ({ server }: { server: Server }) => {
   const [show, setShow] = useState(false)
 
   return (

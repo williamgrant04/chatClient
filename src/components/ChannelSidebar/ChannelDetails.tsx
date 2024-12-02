@@ -1,7 +1,10 @@
-const ChannelDetails = ({ channel } : { channel: any }) => {
+import { Link } from "@tanstack/react-router"
+import { Channel } from "../../utils/APITypes"
+
+const ChannelDetails = ({ channel } : { channel: Channel }) => {
   return (
     <div>
-      <h4>{channel.name}</h4>
+      <Link to={`${channel.id}`}>{channel.name}</Link>
     </div>
   )
 }

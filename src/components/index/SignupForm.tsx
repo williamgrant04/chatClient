@@ -29,7 +29,7 @@ const SignupForm = () => {
     setErrors([])
     try {
       await signup(credientials)
-      navigate({ to: "/self" })
+      navigate({ to: "/server/self" })
     } catch (err: any) {
       setErrors(err.errors)
     }

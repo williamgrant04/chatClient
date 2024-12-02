@@ -1,7 +1,11 @@
+import { Link } from "@tanstack/react-router"
+
 const DmIcon = () => {
   return (
     <div>
-      <img src="https://placehold.co/50" alt="dm icon" />
+      <Link to="/server/self">
+        <img src="https://placehold.co/50" alt="dm icon" />
+      </Link>
     </div>
   )
 }
