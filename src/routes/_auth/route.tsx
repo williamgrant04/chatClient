@@ -23,6 +23,8 @@ function AuthLoader() {
     } else if (loaderData.logged_in && window.location.pathname === '/') {
       user.setUser(loaderData.user!) // Non-null assertion here because the above condition checks this, if this is null something went really wrong
       navigate({ to: '/server/self' })
+    } else if (loaderData.logged_in) {
+      user.setUser(loaderData.user!)
     }
   }, [])
 
