@@ -2,6 +2,7 @@ import React, { useContext, useReducer, useState } from "react"
 import { signup } from "../../utils/ChatAPI"
 import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
+import { User } from "../../utils/APITypes"
 
 const SignupForm = () => {
   const user = useContext(userContext)
@@ -30,8 +31,9 @@ const SignupForm = () => {
     e.preventDefault()
     setErrors([])
     try {
-      const res = await signup(credientials)
-      user.setUser(res.user)
+      const res = await signup(credientials) as User // Won't be undefined because the API will throw an error if there's an error
+      user.setUser(res)
+      sessionStorage.setItem("loginsignup", "true") // Temporary solution to prevent the user from going back to the login page
       navigate({ to: "/server/self" })
     } catch (err: any) {
       setErrors(err.errors)

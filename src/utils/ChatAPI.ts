@@ -1,14 +1,11 @@
 import axios from "axios"
 const baseUrl = "http://localhost:3000"
 import { Channel, Message, Server, User } from "./APITypes"
-interface userResponse {
-  user?: User,
-  errors?: string[]
-}
+
 
 //* USER AUTH
 export const signup = (credentials: { email: string, username: string, password: string }) => {
-  return new Promise<userResponse>(async (resolve, reject) => {
+  return new Promise<User | string[]>(async (resolve, reject) => {
     try {
       const response = await axios.post(`${baseUrl}/signup`, {
         user: {
@@ -26,7 +23,7 @@ export const signup = (credentials: { email: string, username: string, password:
 }
 
 export const login = (credentials: { email: string, password: string }) => {
-  return new Promise<userResponse>(async (resolve, reject) => {
+  return new Promise<User | string[]>(async (resolve, reject) => {
     try {
       const response = await axios.post(`${baseUrl}/login`, {
         user: {
@@ -45,13 +42,19 @@ export const login = (credentials: { email: string, password: string }) => {
 
 export const logout = () => {
   return new Promise(async (resolve, reject) => {
-    const response = await axios.delete(`${baseUrl}/logout`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
-    })
+    try {
+      const response = await axios.delete(`${baseUrl}/logout`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
 
-    // todo: handle response
+      console.log(response)
+      localStorage.removeItem("token")
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
   })
 }
 

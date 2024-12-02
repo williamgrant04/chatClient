@@ -2,6 +2,7 @@ import React, { useContext, useReducer, useState } from "react"
 import { login } from "../../utils/ChatAPI"
 import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
+import { User } from "../../utils/APITypes"
 
 const LoginForm = () => {
   const user = useContext(userContext)
@@ -28,8 +29,9 @@ const LoginForm = () => {
     e.preventDefault()
     setErrors([])
     try {
-      const res = await login(credientials)
-      user.setUser(res.user)
+      const res = await login(credientials) as User // Won't be undefined because the API will throw an error if there's an error
+      user.setUser(res)
+      sessionStorage.setItem("loginsignup", "true")
       navigate({ to: "/server/self" })
     } catch (err: any) {
       console.log(err)
