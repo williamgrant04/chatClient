@@ -8,10 +8,10 @@ const Messages = (props: { messages: any[] }) => {
   const [messages, setMessages] = useState(props.messages)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
+  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data) => setMessages([...messages, data]) })
 
   useEffect(() => {
     setMessages(props.messages)
-    cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data) => setMessages([...messages, data]) })
 
     return () => {
       cable.disconnect()
