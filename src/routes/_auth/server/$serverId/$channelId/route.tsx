@@ -9,8 +9,6 @@ export const Route = createFileRoute('/_auth/server/$serverId/$channelId')({
     const res = await getMessages(channelId)
     return res
   },
-  gcTime: 0,
-  shouldReload: false,
   component: ChannelLoader,
 })
 

@@ -93,6 +93,23 @@ export const getServers = () => {
   })
 }
 
+export const getServer = (id: string) => {
+  return new Promise<Server>(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`${baseUrl}/server/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
 export const newServer = (name: string) => {
   return new Promise<Server>(async (resolve, reject) => {
     try {

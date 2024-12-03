@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { Channel } from "../../utils/APITypes"
 
-const ChannelDetails = ({ channel } : { channel: Channel }) => {
+const ChannelButton = ({ channel } : { channel: Channel }) => {
   return (
     <div>
       <Link to={`${channel.id}`}>{channel.name}</Link>
@@ -9,4 +9,4 @@ const ChannelDetails = ({ channel } : { channel: Channel }) => {
   )
 }
 
-export default ChannelDetails
+export default ChannelButton
