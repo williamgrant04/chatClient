@@ -7,8 +7,8 @@ const UserDetails = () => {
   const user = useContext(userContext)
 
   return (
-    <div>
-      <h1 onClick={() => { setDropdownOpen(!dropdownOpen) }}>{user.user?.username}</h1>
+    <div style={{ justifySelf: "end" }}>
+      <h1 style={{ margin: 0 }} onClick={() => { setDropdownOpen(!dropdownOpen) }}>{user.user?.username}</h1>
       { dropdownOpen && <UserDropDown /> }
     </div>
   )
