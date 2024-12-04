@@ -25,6 +25,7 @@ const ServerBar = ({ servers }: { servers: Server[] }) => {
 }
 
 const ServerBarWrapper = styled.div`
+  position: relative;
   background-color: #a0a0a0;
   display: grid;
   grid-template-columns: auto auto 1fr auto;
