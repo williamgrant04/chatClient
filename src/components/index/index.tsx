@@ -32,6 +32,11 @@ const IndexWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px 40px;
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+  }
 `
 
 const ContentWrapper = styled.div`
@@ -53,7 +58,7 @@ const Description = styled.div`
 
   p {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.6rem;
   }
 `
 
