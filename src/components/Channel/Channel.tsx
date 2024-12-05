@@ -1,18 +1,36 @@
-import { Message } from "../../utils/APITypes"
+import styled from "styled-components"
+import { IChannel, Message } from "../../utils/APITypes"
 import ChannelDetails from "./ChannelDetails"
 import MessageBar from "./Messages/MessageBar"
 import Messages from "./Messages/Messages"
 
-const Channel = (props: { messages: Message[] }) => {
+const Channel = ({ messages, channel }: { messages: Message[], channel: IChannel }) => {
   return (
-    <>
+    <ChannelWrapper>
       <ChannelDetails />
-      <div style={{ backgroundColor: "red", width: "100vw", height: "500px" }}>
-        <Messages messages={props.messages}/>
-        <MessageBar />
-      </div>
-    </>
+      <ChannelContent>
+        <Messages messages={messages}/>
+        <MessageBar channel={channel}/>
+      </ChannelContent>
+    </ChannelWrapper>
   )
 }
+
+const ChannelWrapper = styled.div`
+  background-color: #aaa;
+  margin-left: 40px;
+  width: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+`
+
+const ChannelContent = styled.div`
+  background-color: #aaa;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-right: 5px;
+`
 
 export default Channel

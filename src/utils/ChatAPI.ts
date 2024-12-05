@@ -1,6 +1,6 @@
 import axios from "axios"
 const baseUrl = "http://localhost:3000"
-import { Channel, Message, Server, User } from "./APITypes"
+import { IChannel, Message, Server, User } from "./APITypes"
 
 
 //* USER AUTH
@@ -133,9 +133,26 @@ export const newServer = (name: string) => {
 
 //* CHANNELS
 export const getChannels = (serverId: string) => {
-  return new Promise<Channel[]>(async (resolve, reject) => {
+  return new Promise<IChannel[]>(async (resolve, reject) => {
     try {
       const response = await axios.get(`${baseUrl}/server/${serverId}/channels`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
+export const getChannel = (id: string) => {
+  return new Promise<IChannel>(async (resolve, reject) => {
+    try {
+      const response = await axios.get(`${baseUrl}/channel/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }

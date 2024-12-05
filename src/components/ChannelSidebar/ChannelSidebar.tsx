@@ -1,8 +1,8 @@
 import styled from "styled-components"
-import { Channel, Server } from "../../utils/APITypes"
+import { IChannel, Server } from "../../utils/APITypes"
 import ChannelButton from "./ChannelButton"
 
-const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Server }) => {
+const ChannelSidebar = ({ channels, server }: { channels: IChannel[], server: Server }) => {
   // TODO: Add an option to turn off the hover, and make it a permanent sidebar
 
   return (
@@ -10,7 +10,7 @@ const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Ser
       <ServerDetails>
         <p>{server.name}</p>
       </ServerDetails>
-      {channels.map((channel: Channel) => {
+      {channels.map((channel: IChannel) => {
         return (
           <ChannelButton key={channel.id} channel={channel}/>
         )
@@ -31,6 +31,7 @@ const Sidebar = styled.div`
   padding-right: 40px;
   gap: 10px;
   transition: 0.3s;
+  z-index: 1;
 
   // Add a shadow to the right side of the sidebar without the shadow being visible on any other side
   &::after {

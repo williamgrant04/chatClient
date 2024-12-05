@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router"
-import { Channel } from "../../utils/APITypes"
+import { IChannel } from "../../utils/APITypes"
 import styled from "styled-components"
 
-const ChannelButton = ({ channel } : { channel: Channel }) => {
+const ChannelButton = ({ channel } : { channel: IChannel }) => {
   return (
     <ChannelLink to={`${channel.id}`}>{channel.name}</ChannelLink>
   )

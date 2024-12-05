@@ -8,7 +8,7 @@ export interface User {
 }
 
 // These interfaces may change when I start introducing (more) serializers on the backend
-export interface Channel {
+export interface IChannel {
   id: number,
   name: string,
   created_at: string,
@@ -20,7 +20,7 @@ export interface Server {
   id: number,
   name: string,
   created: string,
-  defaultChannel: Channel
+  defaultChannel: IChannel
 }
 
 export interface Message {
