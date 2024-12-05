@@ -15,9 +15,9 @@ function ServerLayout() {
   const loaderData = Route.useLoaderData() as { servers: Server[] }
 
   return (
-    <div>
+    <>
       <ServerBar servers={loaderData.servers} />
       <Outlet />
-    </div>
+    </>
   )
 }
