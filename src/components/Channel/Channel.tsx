@@ -6,7 +6,7 @@ import Messages from "./Messages/Messages"
 const Channel = ({ messages, channel }: { messages: Message[], channel: Channel }) => {
   return (
     <ChannelWrapper>
-      <ChannelDetails />
+      <ChannelDetails channel={channel}/>
       <ChannelContent>
         <Messages messages={messages}/>
         <MessageBar channel={channel}/>
