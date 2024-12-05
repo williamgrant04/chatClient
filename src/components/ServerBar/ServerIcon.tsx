@@ -1,7 +1,6 @@
 import { useState } from "react"
 import ServerHover from "./ServerHover"
 import { Link } from "@tanstack/react-router"
-import { Server } from "../../APITypes"
 import styled from "styled-components"
 
 const ServerIcon = ({ server }: { server: Server }) => {
