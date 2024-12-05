@@ -1,4 +1,5 @@
-export interface User {
+// These interfaces will change when I start introducing (more) serializers on the backend
+interface User {
   id: number,
   email: string,
   username: string,
@@ -7,8 +8,7 @@ export interface User {
   jti: string
 }
 
-// These interfaces may change when I start introducing (more) serializers on the backend
-export interface IChannel {
+interface Channel {
   id: number,
   name: string,
   created_at: string,
@@ -16,14 +16,14 @@ export interface IChannel {
   server_id: number
 }
 
-export interface Server {
+interface Server {
   id: number,
   name: string,
   created: string,
-  defaultChannel: IChannel
+  defaultChannel: Channel
 }
 
-export interface Message {
+interface Message {
   id: number,
   content: string,
   created_at: string,

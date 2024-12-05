@@ -4,9 +4,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-import { IChannel } from "../../../utils/APITypes";
 
-const MessageBar = ({ channel }: { channel: IChannel }) => {
+const MessageBar = ({ channel }: { channel: Channel }) => {
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
   const [message, setMessage] = useState("")
 

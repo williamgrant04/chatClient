@@ -1,7 +1,6 @@
 import ServerIcon from "./ServerIcon"
 import DmIcon from "./DmIcon"
 import NewServerIcon from "./NewServerIcon"
-import { Server } from "../../utils/APITypes"
 import UserDetails from "../User/UserDetails"
 import styled from "styled-components"
 

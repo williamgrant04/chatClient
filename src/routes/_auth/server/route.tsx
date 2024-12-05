@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import ServerBar from '../../../components/ServerBar/ServerBar'
 import { getServers } from '../../../utils/ChatAPI'
-import { Server } from '../../../utils/APITypes'
+import { Server } from '../../../APITypes'
 
 export const Route = createFileRoute('/_auth/server')({
   loader: async () => {

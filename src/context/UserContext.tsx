@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { User } from "../utils/APITypes";
+import { User } from "../APITypes";
 
 const userContext = createContext({
   user: {} as User | undefined,

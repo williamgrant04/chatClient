@@ -1,7 +1,6 @@
 import { createFileRoute, Outlet, } from '@tanstack/react-router'
 import ChannelSidebar from '../../../../components/ChannelSidebar/ChannelSidebar'
 import { getChannels, getServer } from '../../../../utils/ChatAPI'
-import { IChannel, Server } from '../../../../utils/APITypes'
 import styled from 'styled-components'
 import { useState } from 'react'
 
@@ -18,7 +17,7 @@ export const Route = createFileRoute('/_auth/server/$serverId')({
 function ChannelLayout() {
   const [height, setHeight] = useState(window.innerHeight)
   window.addEventListener('resize', () => setHeight(window.innerHeight)) // This is probably the worst solution to this problem, but it works
-  const loaderData = Route.useLoaderData() as { channels: IChannel[], server: Server }
+  const loaderData = Route.useLoaderData() as { channels: Channel[], server: Server }
 
   return (
     <MainWrapper $height={height}>

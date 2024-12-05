@@ -1,10 +1,9 @@
 import styled from "styled-components"
-import { IChannel, Message } from "../../utils/APITypes"
 import ChannelDetails from "./ChannelDetails"
 import MessageBar from "./Messages/MessageBar"
 import Messages from "./Messages/Messages"
 
-const Channel = ({ messages, channel }: { messages: Message[], channel: IChannel }) => {
+const Channel = ({ messages, channel }: { messages: Message[], channel: Channel }) => {
   return (
     <ChannelWrapper>
       <ChannelDetails />

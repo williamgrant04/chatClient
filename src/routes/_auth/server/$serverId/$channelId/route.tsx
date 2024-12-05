@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import Channel from '../../../../../components/Channel/Channel'
 import { getChannel, getMessages } from '../../../../../utils/ChatAPI'
-import { IChannel, Message } from '../../../../../utils/APITypes'
 
 export const Route = createFileRoute('/_auth/server/$serverId/$channelId')({
   loader: async () => {
@@ -14,7 +13,7 @@ export const Route = createFileRoute('/_auth/server/$serverId/$channelId')({
 })
 
 function ChannelLoader() {
-  const loaderData = Route.useLoaderData() as { messages: Message[], channel: IChannel }
+  const loaderData = Route.useLoaderData() as { messages: Message[], channel: Channel }
 
   return (
     <Channel messages={loaderData.messages} channel={loaderData.channel}/>

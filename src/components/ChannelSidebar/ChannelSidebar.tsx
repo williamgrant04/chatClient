@@ -1,8 +1,7 @@
 import styled from "styled-components"
-import { IChannel, Server } from "../../utils/APITypes"
 import ChannelButton from "./ChannelButton"
 
-const ChannelSidebar = ({ channels, server }: { channels: IChannel[], server: Server }) => {
+const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Server }) => {
   // TODO: Add an option to turn off the hover, and make it a permanent sidebar
 
   return (
@@ -10,7 +9,7 @@ const ChannelSidebar = ({ channels, server }: { channels: IChannel[], server: Se
       <ServerDetails>
         <p>{server.name}</p>
       </ServerDetails>
-      {channels.map((channel: IChannel) => {
+      {channels.map((channel: Channel) => {
         return (
           <ChannelButton key={channel.id} channel={channel}/>
         )

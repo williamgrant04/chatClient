@@ -1,4 +1,4 @@
-import { Server } from "../../utils/APITypes"
+import { Server } from "../../APITypes"
 
 const ServerHover = ({ server, show }: {server: Server, show: boolean}) => {
 

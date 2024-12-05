@@ -2,7 +2,6 @@ import React, { useContext, useReducer, useState } from "react"
 import { login } from "../../utils/ChatAPI"
 import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
-import { User } from "../../utils/APITypes"
 import styled from "styled-components"
 
 const LoginForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.SetStateAction<boolean>>, loginState: boolean }) => {

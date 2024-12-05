@@ -1,6 +1,5 @@
 import axios from "axios"
 const baseUrl = "http://localhost:3000"
-import { IChannel, Message, Server, User } from "./APITypes"
 
 
 //* USER AUTH
@@ -133,7 +132,7 @@ export const newServer = (name: string) => {
 
 //* CHANNELS
 export const getChannels = (serverId: string) => {
-  return new Promise<IChannel[]>(async (resolve, reject) => {
+  return new Promise<Channel[]>(async (resolve, reject) => {
     try {
       const response = await axios.get(`${baseUrl}/server/${serverId}/channels`, {
         headers: {
@@ -150,7 +149,7 @@ export const getChannels = (serverId: string) => {
 }
 
 export const getChannel = (id: string) => {
-  return new Promise<IChannel>(async (resolve, reject) => {
+  return new Promise<Channel>(async (resolve, reject) => {
     try {
       const response = await axios.get(`${baseUrl}/channel/${id}`, {
         headers: {

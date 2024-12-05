@@ -1,7 +1,6 @@
 import { useParams } from "@tanstack/react-router";
 import { createConsumer } from "@rails/actioncable";
 import { useEffect, useRef, useState } from "react";
-import { Message } from "../../../utils/APITypes";
 import styled from "styled-components";
 
 const cable = createConsumer("ws://localhost:3000/cable")
@@ -47,7 +46,7 @@ const MessagesWrapper = styled.div`
   padding: 0 20px;
   font-size: 1rem;
 
-
+  // This is taken from w3schools, when I get around to updating the colours I'll update this
   /* width */
   &::-webkit-scrollbar {
     height: 10px;
