@@ -18,6 +18,7 @@ const ServerIcon = ({ server }: { server: Server }) => {
 }
 
 const Wrapper = styled.div`
+  position: relative;
   height: 50px;
   width: 50px;
 `
