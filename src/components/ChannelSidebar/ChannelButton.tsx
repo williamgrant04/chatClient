@@ -20,9 +20,14 @@ const ChannelLink = styled(Link)`
   font-size: 1.1rem;
   transition: 0.2s;
 
+  &.active {
+    background-color: #606060;
+  }
+
   &:hover {
     background-color: #c0c0c0;
   }
+
 `
 
 export default ChannelButton

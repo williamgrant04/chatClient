@@ -9,11 +9,13 @@ const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Ser
       <ServerDetails>
         <p>{server.name}</p>
       </ServerDetails>
-      {channels.map((channel: Channel) => {
-        return (
-          <ChannelButton key={channel.id} channel={channel}/>
-        )
-      })}
+      <ChannelList>
+        {channels.map((channel: Channel) => {
+          return (
+            <ChannelButton key={channel.id} channel={channel}/>
+          )
+        })}
+      </ChannelList>
     </Sidebar>
   )
 }
@@ -59,6 +61,39 @@ const ServerDetails = styled.div`
   background-color: #606060;
 
   p { margin: 0; }
+`
+
+const ChannelList = styled.div`
+  overflow-y: auto;
+  display: grid;
+  justify-items: center;
+  align-items: start;
+  gap: 30px;
+  width: 90%;
+  margin-bottom: 10px;
+
+  &::-webkit-scrollbar {
+    height: 10px;
+    width: 6px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    margin: 5px;
+    background: #c0c0c0;
+    border-radius: 10px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 `
 
 export default ChannelSidebar

@@ -56,7 +56,7 @@ const MessagesWrapper = styled.div`
   /* Track */
   &::-webkit-scrollbar-track {
     margin: 5px;
-    background: #f1f1f1;
+    background: #c0c0c0;
     border-radius: 10px;
   }
 
