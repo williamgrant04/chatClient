@@ -23,6 +23,10 @@ const Messages = (props: { messages: Message[] }) => {
     scrollRef.current?.scrollIntoView({behavior: "instant"})
   }, [])
 
+  useEffect(() => { // When new message is added, scroll smoothly
+    scrollRef.current?.scrollIntoView({behavior: "smooth"})
+  }, [messages])
+
   useEffect(() => {
     setMessages(props.messages)
 
@@ -30,10 +34,6 @@ const Messages = (props: { messages: Message[] }) => {
       cable.disconnect()
     }
   }, [params])
-
-  useEffect(() => { // When new message is added, scroll smoothly
-    scrollRef.current?.scrollIntoView({behavior: "smooth"})
-  }, [messages])
 
   return (
     <MessagesWrapper>
