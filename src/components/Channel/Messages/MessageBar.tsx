@@ -1,11 +1,12 @@
 import { useParams } from "@tanstack/react-router";
 import { sendMessage } from "../../../utils/ChatAPI";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 const MessageBar = ({ channel }: { channel: Channel }) => {
+  const formRef = useRef<HTMLFormElement>(null)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
   const [message, setMessage] = useState("")
 
@@ -15,8 +16,14 @@ const MessageBar = ({ channel }: { channel: Channel }) => {
     setMessage("")
   }
 
+  const handleEditKeybind = (e: KeyboardEvent) => {
+    if (e.key === "ArrowUp") {
+      console.log("Edit message bind")
+    }
+  }
+
   return (
-    <MessageForm onSubmit={messageSubmitHandler} autoComplete="false">
+    <MessageForm ref={formRef} onSubmit={messageSubmitHandler} autoComplete="false" onFocus={() => formRef.current?.addEventListener("keydown", handleEditKeybind)} onBlur={() => formRef.current?.removeEventListener("keydown", handleEditKeybind)}>
       {/* The placeholder text is almost invisible, going to have to update app-wide colours,
           I know I can change the colour of it but I do think the grey is too light */}
       <MessageInput autoComplete="off" type="text" name="message" value={message} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)} placeholder={`Message ${channel.name}`}/>

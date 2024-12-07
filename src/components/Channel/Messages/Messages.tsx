@@ -11,7 +11,13 @@ const Messages = (props: { messages: Message[] }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
-  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data: Message) => setMessages([...messages, data]) })
+  const handleReceived = (data: { edit: boolean, message: Message }) => {
+    if (!data.edit) {
+      setMessages([...messages, data.message])
+    }
+  }
+
+  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: handleReceived })
 
   useLayoutEffect(() => { // When page first loads, scroll to bottom instantly
     scrollRef.current?.scrollIntoView({behavior: "instant"})

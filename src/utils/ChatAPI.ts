@@ -204,3 +204,24 @@ export const sendMessage = (content: string, channelId: string) => {
     }
   })
 }
+
+export const editMessage = (content: string, messageId: number) => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    try {
+      const response = await axios.patch(`${baseUrl}/message/${messageId}/edit`, {
+        message: {
+          content
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}

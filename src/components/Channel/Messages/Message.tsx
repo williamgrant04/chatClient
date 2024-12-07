@@ -1,13 +1,65 @@
 import styled from "styled-components"
+import { editMessage } from "../../../utils/ChatAPI"
+import { useContext, useEffect, useState } from "react"
+import { createConsumer } from "@rails/actioncable"
+import { useParams } from "@tanstack/react-router"
+import userContext from "../../../context/UserContext"
+
+
+const cable = createConsumer("ws://localhost:3000/cable")
 
 const Message = ({ message }: { message: Message }) => {
+  const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
+  const [isEditing, setIsEditing] = useState(false)
+  const [content, setContent] = useState(message.content)
+  const date = new Date(message.created_at)
+  const user = useContext(userContext)
+
+  // I want to find a way to not have to create 2 subscriptions
+  const handleEditClick = () => {
+    setIsEditing(true)
+    setContent(message.content)
+    cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received:
+      (data: { edit: boolean, message: Message }) => {
+        if (data.edit && data.message.id === message.id) {
+          setContent(data.message.content)
+        }
+      }
+    })
+  }
+
+  useEffect(() => {
+    return () => {
+      cable.disconnect()
+    }
+  }, [])
+
+  const handleMessageEdit = async () => {
+    try {
+      await editMessage(content, message.id)
+      setIsEditing(false)
+      cable.disconnect()
+    } catch (err: any) {
+      // The error will be because the message content is empty, so I don't want to close the edit box
+    }
+  }
+
   return (
     <MessageWrapper>
       <MessageDetails>
         <h3>{message.author.username}</h3>
-        <p>{message.created_at}</p>
+        <p>{date.toDateString()}</p>
       </MessageDetails>
-      <p>{message.content}</p>
+      {isEditing ?
+        <div>
+          <input type="text" value={content} onChange={ (e)=> setContent(e.target.value) }/>
+          <button onClick={handleMessageEdit}>save</button>
+        </div>
+        : <p>{content}</p>}
+      {message.author.id === user.user?.id && // Only show the edit button if the user is the author of the message
+      <div>
+        <button onClick={handleEditClick}>edit</button>
+      </div>}
     </MessageWrapper>
   )
 }
