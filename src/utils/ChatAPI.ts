@@ -219,9 +219,26 @@ export const editMessage = (content: string, messageId: number) => {
       })
 
       console.log(response)
-      resolve(response.data)
+      resolve(true)
     } catch (error: any) {
-      reject(error.response.data)
+      reject(false)
+    }
+  })
+}
+
+export const deleteMessage = (messageId: number) => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    try {
+      const response = await axios.delete(`${baseUrl}/message/${messageId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(true)
+    } catch (error: any) {
+      reject(false)
     }
   })
 }

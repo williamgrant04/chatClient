@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import { editMessage } from "../../../utils/ChatAPI"
+import { deleteMessage, editMessage } from "../../../utils/ChatAPI"
 import { useContext, useEffect, useRef, useState } from "react"
 import { createConsumer } from "@rails/actioncable"
 import { useParams } from "@tanstack/react-router"
@@ -33,6 +33,10 @@ const Message = ({ message }: { message: Message }) => {
         }
       }
     })
+  }
+
+  const handleDeleteClick = () => {
+    deleteMessage(message.id)
   }
 
   useEffect(() => {
@@ -92,7 +96,7 @@ const Message = ({ message }: { message: Message }) => {
           <FontAwesomeIcon icon={faPen} />
         </Action>
         {/* This will be a delete button */}
-        <Action onClick={() => {}}>
+        <Action onClick={handleDeleteClick}>
           <FontAwesomeIcon icon={faMinus} />
         </Action>
       </MessageActions>}

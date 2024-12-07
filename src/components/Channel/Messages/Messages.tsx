@@ -11,9 +11,11 @@ const Messages = (props: { messages: Message[] }) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
-  const handleReceived = (data: { edit: boolean, message: Message }) => {
-    if (!data.edit) {
+  const handleReceived = (data: { edit?: boolean, message: Message, destroy?: boolean }) => {
+    if (!data.edit && !data.destroy) {
       setMessages([...messages, data.message])
+    } else if (data.destroy) {
+      setMessages(messages.filter((message) => message.id !== data.message.id))
     }
   }
 
