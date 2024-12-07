@@ -110,7 +110,7 @@ export const getServer = (id: string) => {
 }
 
 export const newServer = (name: string) => {
-  return new Promise<Server>(async (resolve, reject) => {
+  return new Promise<Server | {errors: string[]}>(async (resolve, reject) => {
     try {
       const response = await axios.post(`${baseUrl}/servers/new`, {
         server: {
