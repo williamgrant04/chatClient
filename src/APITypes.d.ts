@@ -1,11 +1,9 @@
 // These interfaces will change when I start introducing (more) serializers on the backend
 interface User {
   id: number,
-  email: string,
   username: string,
   created_at: string,
-  updated_at: string,
-  jti: string
+  updated_at: string
 }
 
 interface Channel {
@@ -28,6 +26,5 @@ interface Message {
   content: string,
   created_at: string,
   updated_at: string,
-  user_id: number,
-  channel_id: number
+  author: User
 }

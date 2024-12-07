@@ -1,7 +1,8 @@
 import { useParams } from "@tanstack/react-router";
 import { createConsumer } from "@rails/actioncable";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import styled from "styled-components";
+import Message from "./Message";
 
 const cable = createConsumer("ws://localhost:3000/cable")
 
@@ -12,6 +13,10 @@ const Messages = (props: { messages: Message[] }) => {
 
   cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: (data: Message) => setMessages([...messages, data]) })
 
+  useLayoutEffect(() => { // When page first loads, scroll to bottom instantly
+    scrollRef.current?.scrollIntoView({behavior: "instant"})
+  }, [])
+
   useEffect(() => {
     setMessages(props.messages)
 
@@ -20,7 +25,7 @@ const Messages = (props: { messages: Message[] }) => {
     }
   }, [params])
 
-  useEffect(() => {
+  useEffect(() => { // When new message is added, scroll smoothly
     scrollRef.current?.scrollIntoView({behavior: "smooth"})
   }, [messages])
 
@@ -28,9 +33,7 @@ const Messages = (props: { messages: Message[] }) => {
     <MessagesWrapper>
       {messages.map((message) => {
         return (
-          <div key={message.id}>
-            <p>{message.content}</p>
-          </div>
+          <Message key={message.id} message={message} />
         )
       })}
       <div ref={scrollRef}></div>
@@ -43,7 +46,6 @@ const MessagesWrapper = styled.div`
   flex: 1 1 auto;
   overflow-x: hidden;
   overflow-y: scroll;
-  padding: 0 20px;
   font-size: 1rem;
 
   // This is taken from w3schools, when I get around to updating the colours I'll update this
