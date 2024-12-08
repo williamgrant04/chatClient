@@ -27,7 +27,6 @@ const ChannelLink = styled(Link)`
   &:hover {
     background-color: #c0c0c0;
   }
-
 `
 
 export default ChannelButton

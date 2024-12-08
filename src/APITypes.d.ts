@@ -18,7 +18,8 @@ interface Server {
   id: number,
   name: string,
   created: string,
-  defaultChannel: Channel
+  defaultChannel: Channel,
+  owner: User
 }
 
 interface Message {

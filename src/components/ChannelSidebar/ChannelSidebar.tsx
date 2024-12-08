@@ -1,7 +1,14 @@
 import styled from "styled-components"
 import ChannelButton from "./ChannelButton"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus"
+import { useContext, useState } from "react"
+import CreateChannelModal from "./CreateChannelModal"
+import userContext from "../../context/UserContext"
 
 const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Server }) => {
+  const [open, setOpen] = useState(false)
+  const user = useContext(userContext)
   // TODO: Add an option to turn off the hover, and make it a permanent sidebar
 
   return (
@@ -9,7 +16,14 @@ const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Ser
       <ServerDetails>
         <p>{server.name}</p>
       </ServerDetails>
+      <CreateChannelModal open={open} setOpen={setOpen} server={server}/>
       <ChannelList>
+        {
+          user.user?.id === server.owner.id &&
+          <CreateChannel onClick={() => setOpen(true)}>
+            <FontAwesomeIcon icon={faPlus}/>&nbsp;New channel
+          </CreateChannel>
+        }
         {channels.map((channel: Channel) => {
           return (
             <ChannelButton key={channel.id} channel={channel}/>
@@ -93,6 +107,30 @@ const ChannelList = styled.div`
   /* Handle on hover */
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+`
+
+const CreateChannel = styled.button`
+  display: block;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #808080;
+  width: 90%;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #000;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: 0.2s;
+
+  &.active {
+    background-color: #606060;
+  }
+
+  &:hover {
+    background-color: #c0c0c0;
   }
 `
 

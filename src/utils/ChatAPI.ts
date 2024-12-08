@@ -165,6 +165,27 @@ export const getChannel = (id: string) => {
   })
 }
 
+export const createChannel = (name: string, serverId: number) => {
+  return new Promise<Channel>(async (resolve, reject) => {
+    try {
+      const response = await axios.post(`${baseUrl}/server/${serverId}/channels/new`, {
+        channel: {
+          name
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+
+      console.log(response)
+      resolve(response.data)
+    } catch (error: any) {
+      reject(error.response.data)
+    }
+  })
+}
+
 //* MESSAGES
 export const getMessages = (channelId: string) => {
   return new Promise<Message[]>(async (resolve, reject) => {
