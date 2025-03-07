@@ -3,6 +3,7 @@ import { signup } from "../../utils/ChatAPI"
 import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
 import styled from "styled-components"
+import Input from "./Input"
 
 interface error {
   type: string,
@@ -89,14 +90,11 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
     <SignupWrapper>
       <h2>Join the party</h2>
       <Form onSubmit={formSubmitHandler} autoComplete="off">
-        <TextInput type="text" placeholder="Email" name="email" onChange={formChangeHandler} value={credentials.email} />
-        { (error && error.type === "email") && <ErrorText>{error.message}</ErrorText> }
+        <Input name="email" error={error} onChange={formChangeHandler} value={credentials.email} />
 
-        <TextInput type="text" placeholder="Username" name="username" onChange={formChangeHandler} value={credentials.username} />
-        { (error && error.type === "username") && <ErrorText>{error.message}</ErrorText> }
+        <Input name="username" error={error} onChange={formChangeHandler} value={credentials.username} />
 
-        <TextInput type="password" placeholder="Password" name="password" onChange={formChangeHandler} value={credentials.password} />
-        { (error && error.type === "password") && <ErrorText>{error.message}</ErrorText> }
+        <Input name="password" error={error} onChange={formChangeHandler} value={credentials.password} />
 
         <Submit type="submit" value="Sign up" />
         { (error && error.type === "unknown") && <ErrorText>{error.message}</ErrorText> }
@@ -129,20 +127,6 @@ const Form = styled.form`
     align-self: center;
   }
 `
-
-const TextInput = styled.input`
-  padding: 5px 10px;
-  font-size: 1.4rem;
-  border-radius: 10px;
-  border: 1px solid transparent;
-  outline: none;
-  transition: 0.3s;
-
-  &:focus {
-    border: 1px solid #000;
-    border-radius: 5px;
-  }
-  `
 
 const Submit = styled.input`
   width: 100%;
