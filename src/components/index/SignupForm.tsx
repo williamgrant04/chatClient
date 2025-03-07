@@ -4,21 +4,55 @@ import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
 import styled from "styled-components"
 
+interface error {
+  type: string,
+  message: string
+}
+
+const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)/
+
 const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.SetStateAction<boolean>>, loginState: boolean }) => {
   const user = useContext(userContext)
-  const [errors, setErrors] = useState<string[]>([])
+  const [error, setError] = useState<error | null>(null) // Null = no error
   const navigate = useNavigate()
 
-  // TODO: Add client-side validation (prevents unnecessary API calls)
+  const validateCredentials = (credentials: { username: string, email: string, password: string }) => {
+    if (!credentials.email) {
+      setError({ type: "email", message: "Please provide an email." })
+      return false
+    }
 
-  const [credientials, dispatchCredentials] = useReducer((state: { email: string, username: string, password: string }, action: { type: string, value: string }) => {
+    if (!emailRegex.test(credentials.email)) {
+      setError({ type: "email", message: "Email is invalid." })
+      return false
+    }
+
+    if (!credentials.username) {
+      setError({ type: "username", message: "Please provide a username." })
+      return false
+    }
+
+    if (!credentials.password) {
+      setError({ type: "password", message: "Please provide a password." })
+      return false
+    }
+
+    if (credentials.password.length < 6 || credentials.password.length > 128) {
+      setError({ type: "password", message: "Please provide a password between 6 and 128 characters long." })
+      return false
+    }
+
+    return true
+  }
+
+  const [credentials, dispatchCredentials] = useReducer((state: { email: string, username: string, password: string }, action: { type: string, value: string }) => {
     switch (action.type) {
       case 'username':
-        return {username: action.value, email: state.email, password: state.password}
+        return { ...state, username: action.value }
       case 'email':
-        return {username: state.username, email: action.value, password: state.password}
+        return { ...state, email: action.value }
       case 'password':
-        return {username: state.username, email: state.email, password: action.value}
+        return { ...state, password: action.value }
       default:
         throw new Error("An error has occurred")
     }
@@ -26,19 +60,28 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
 
   const formChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
+    setError(null)
     dispatchCredentials({type: e.target.name, value: e.target.value})
   }
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setErrors([])
-    try {
-      const res = await signup(credientials) as User // Won't be undefined because the API will throw an error if there's an error
-      user.setUser(res)
-      sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
-      navigate({ to: "/server/self" })
-    } catch (err: any) {
-      setErrors(err.errors)
+    setError(null)
+
+    if (validateCredentials(credentials)) {
+      try {
+        const res = await signup(credentials) as User
+        user.setUser(res)
+
+        sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
+        navigate({ to: "/server/self" })
+      } catch (err: any) {
+        if (err.error.type) {
+          setError(err.error)
+        } else {
+          setError({ type: "unknown", message: "An unknown error has occurred, try again later." })
+        }
+      }
     }
   }
 
@@ -46,11 +89,18 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
     <SignupWrapper>
       <h2>Join the party</h2>
       <Form onSubmit={formSubmitHandler} autoComplete="off">
-        <TextInput type="text" placeholder="Email" name="email" onChange={formChangeHandler} value={credientials.email} />
-        <TextInput type="text" placeholder="Username" name="username" onChange={formChangeHandler} value={credientials.username} />
-        <TextInput type="password" placeholder="Password" name="password" onChange={formChangeHandler} value={credientials.password} />
+        <TextInput type="text" placeholder="Email" name="email" onChange={formChangeHandler} value={credentials.email} />
+        { (error && error.type === "email") && <ErrorText>{error.message}</ErrorText> }
+
+        <TextInput type="text" placeholder="Username" name="username" onChange={formChangeHandler} value={credentials.username} />
+        { (error && error.type === "username") && <ErrorText>{error.message}</ErrorText> }
+
+        <TextInput type="password" placeholder="Password" name="password" onChange={formChangeHandler} value={credentials.password} />
+        { (error && error.type === "password") && <ErrorText>{error.message}</ErrorText> }
+
         <Submit type="submit" value="Sign up" />
-        <p>{errors}</p>
+        { (error && error.type === "unknown") && <ErrorText>{error.message}</ErrorText> }
+
         <p onClick={() => { setLogin(!loginState) }}>Already have an account?</p>
       </Form>
     </SignupWrapper>
@@ -119,6 +169,12 @@ const Submit = styled.input`
     border: 1px solid #000;
     border-radius: 5px;
   }
+`
+
+const ErrorText = styled.p`
+  margin: 0;
+  font-style: italic;
+  font-size: 16px;
 `
 
 export default SignupForm

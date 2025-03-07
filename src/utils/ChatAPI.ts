@@ -1,9 +1,13 @@
 import axios from "axios"
 const baseUrl = "http://localhost:3000"
 
+interface error {
+  type: string,
+  message: string
+}
 
 //* USER AUTH
-export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | string[]> => {
+export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | error | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/signup`, {
       user: {
@@ -13,13 +17,13 @@ export const signup = async (credentials: { email: string, username: string, pas
 
     console.log(response)
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
-    return response.data.user
+    return response.data.user as User
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data as error | string[]
   }
 }
 
-export const login = async (credentials: { email: string, password: string }): Promise<User | string[]> => {
+export const login = async (credentials: { email: string, password: string }): Promise<User | error | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/login`, {
       user: {

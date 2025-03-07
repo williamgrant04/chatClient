@@ -1,6 +1,6 @@
 import { useState } from "react"
 import LoginForm from "./LoginForm"
-import Signup from "./SignupForm"
+import SignupForm from "./SignupForm"
 import styled from "styled-components"
 
 
@@ -14,15 +14,13 @@ const Index = () => {
         <Description>
           <p>Description goes here</p>
         </Description>
-        {
-          login ?
-          <FormWrapper>
+        <FormWrapper>
+          { login ? (
             <LoginForm setLogin={setLogin} loginState={login}/>
-          </FormWrapper> :
-          <FormWrapper>
-            <Signup setLogin={setLogin} loginState={login}/>
-          </FormWrapper>
-        }
+          ) : (
+            <SignupForm setLogin={setLogin} loginState={login}/>
+          )}
+        </FormWrapper>
       </ContentWrapper>
     </IndexWrapper>
   )
@@ -73,11 +71,6 @@ const FormWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px;
-
-  p {
-    margin: 0;
-    font-size: 1.2rem;
-  }
 `
 
 export default Index
