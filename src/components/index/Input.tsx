@@ -1,12 +1,7 @@
 import styled from "styled-components"
 
-interface error {
-  type: string,
-  message: string
-}
-
 interface InputProps {
-  errors: error[],
+  errors: UserError[],
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
   value: string,
   name: string

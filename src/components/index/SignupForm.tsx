@@ -5,16 +5,11 @@ import userContext from "../../context/UserContext"
 import styled from "styled-components"
 import Input from "./Input"
 
-interface error {
-  type: string,
-  message: string
-}
-
 const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)/
 
 const SignupForm = () => {
   const user = useContext(userContext)
-  const [errors, setErrors] = useState<error[]>([])
+  const [errors, setErrors] = useState<UserError[]>([])
   const navigate = useNavigate()
 
   const credentialsValid = (credentials: { username: string, email: string, password: string }) => {

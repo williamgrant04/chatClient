@@ -1,4 +1,10 @@
 // These interfaces will change when I start introducing (more) serializers on the backend
+
+interface UserError {
+  type: string,
+  message: string
+}
+
 interface User {
   id: number,
   username: string,

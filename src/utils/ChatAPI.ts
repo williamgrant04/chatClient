@@ -1,13 +1,8 @@
 import axios from "axios"
 const baseUrl = "http://localhost:3000"
 
-interface error {
-  type: string,
-  message: string
-}
-
 //* USER AUTH
-export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | error[] | string[]> => {
+export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | UserError[] | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/signup`, {
       user: {
@@ -19,11 +14,11 @@ export const signup = async (credentials: { email: string, username: string, pas
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
     return response.data.user as User
   } catch (error: any) {
-    throw error.response.data as error[] | string[]
+    throw error.response.data as UserError[] | string[]
   }
 }
 
-export const login = async (credentials: { email: string, password: string }): Promise<User | error | string[]> => {
+export const login = async (credentials: { email: string, password: string }): Promise<User | UserError[] | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/login`, {
       user: {
@@ -35,7 +30,7 @@ export const login = async (credentials: { email: string, password: string }): P
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
     return response.data.user as User
   } catch (error: any) {
-    throw error.response.data as error[] | string[]
+    throw error.response.data as UserError[] | string[]
   }
 }
 
