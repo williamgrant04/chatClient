@@ -13,13 +13,19 @@ const Messages = (props: { messages: Message[] }) => {
 
   const handleReceived = (data: { edit?: boolean, message: Message, destroy?: boolean }) => {
     if (!data.edit && !data.destroy) {
+      console.log(data);
+
       setMessages([...messages, data.message])
     } else if (data.destroy) {
       setMessages(messages.filter((message) => message.id !== data.message.id))
     }
   }
 
-  cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: handleReceived })
+  useEffect(() => {
+    cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: handleReceived })
+
+    return () => cable.disconnect()
+  }, [])
 
   useLayoutEffect(() => { // When page first loads, scroll to bottom instantly
     scrollRef.current?.scrollIntoView({behavior: "instant"})
