@@ -18,7 +18,7 @@ export const signup = async (credentials: { email: string, username: string, pas
   }
 }
 
-export const login = async (credentials: { email: string, password: string }): Promise<User | UserError[] | string[]> => {
+export const login = async (credentials: { email: string, password: string }): Promise<User | string> => {
   try {
     const response = await axios.post(`${baseUrl}/login`, {
       user: {
@@ -30,7 +30,7 @@ export const login = async (credentials: { email: string, password: string }): P
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
     return response.data.user as User
   } catch (error: any) {
-    throw error.response.data as UserError[] | string[]
+    throw error.response.data as string
   }
 }
 
