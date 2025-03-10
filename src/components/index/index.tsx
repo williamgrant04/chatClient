@@ -3,7 +3,6 @@ import LoginForm from "./LoginForm"
 import SignupForm from "./SignupForm"
 import styled from "styled-components"
 
-
 const Index = () => {
   const [login, setLogin] = useState(false)
 
@@ -20,7 +19,7 @@ const Index = () => {
           ) : (
             <SignupForm />
           )}
-          <p onClick={() => { setLogin(!login) }}>{ login ? "Not a member?" : "Already have an account?"}</p>
+          <LoginSignupButton onClick={() => { setLogin(prev => !prev) }}>{ login ? "Not a member?" : "Already have an account?"}</LoginSignupButton>
         </FormWrapper>
       </ContentWrapper>
     </IndexWrapper>
@@ -72,6 +71,32 @@ const FormWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px;
+`
+
+const LoginSignupButton = styled.button`
+  margin: 10px;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: 0.3s;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  cursor: pointer;
+
+  &:hover {
+    border: 1px solid transparent;
+    background-color: #000;
+    color: #fff;
+    border-radius: 5px;
+  }
+
+  &:active {
+    border: 1px solid transparent;
+    background-color: #444;
+    color: #fff;
+    border-radius: 5px;
+  }
 `
 
 export default Index
