@@ -3,8 +3,22 @@ import DmIcon from "./DmIcon"
 import NewServerIcon from "./NewServerIcon"
 import UserDetails from "../User/UserDetails"
 import styled from "styled-components"
+import { useEffect, useState } from "react"
+import { createConsumer } from "@rails/actioncable"
 
-const ServerBar = ({ servers }: { servers: Server[] }) => {
+const cable = createConsumer("ws://localhost:3000/cable")
+
+const ServerBar = (props: { servers: Server[] }) => {
+  const [servers, setServers] = useState(props.servers)
+
+  useEffect(() => {
+    cable.subscriptions.create({ channel: "ServerChannel" }, { received: (data: Server) => {
+      setServers(prevServers => [ ...prevServers, data ])
+    }})
+
+    return () => cable.disconnect()
+  }, [])
+
   return (
     <ServerBarWrapper>
       <DmIcon />
@@ -13,7 +27,7 @@ const ServerBar = ({ servers }: { servers: Server[] }) => {
         {
           servers.map((server: Server) => {
             return (
-              <ServerIcon key={server.id} server={server}/>
+              <ServerIcon key={server.id} server={server} />
             )
           })
         }

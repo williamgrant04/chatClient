@@ -12,9 +12,8 @@ const NewServerModal = ({ setOpen, open,  setServerName, serverName }: { setOpen
   const handleServerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrors([])
-    setServerName(serverName.trim())
     try {
-      await newServer(serverName)
+      await newServer(serverName.trim())
       setOpen(false)
       setServerName("")
     } catch (error: any) {
