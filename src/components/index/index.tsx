@@ -1,7 +1,6 @@
 import { useState } from "react"
-import LoginForm from "./LoginForm"
-import SignupForm from "./SignupForm"
 import styled from "styled-components"
+import Form from "./Form"
 
 const Index = () => {
   const [login, setLogin] = useState(false)
@@ -14,11 +13,7 @@ const Index = () => {
           <p>Description goes here</p>
         </Description>
         <FormWrapper>
-          { login ? (
-            <LoginForm />
-          ) : (
-            <SignupForm />
-          )}
+          <Form loginForm={login} />
           <LoginSignupButton onClick={() => { setLogin(prev => !prev) }}>{ login ? "Not a member?" : "Already have an account?"}</LoginSignupButton>
         </FormWrapper>
       </ContentWrapper>

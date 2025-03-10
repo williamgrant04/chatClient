@@ -1,18 +1,18 @@
-import { useContext, useReducer, useState } from "react"
-import { signup } from "../../utils/ChatAPI"
-import { useNavigate } from "@tanstack/react-router"
-import userContext from "../../context/UserContext"
-import styled from "styled-components"
-import Input from "./Input"
+import { useContext, useReducer, useState } from "react";
+import userContext from "../../context/UserContext";
+import { useNavigate } from "@tanstack/react-router";
+import { login, signup } from "../../utils/ChatAPI";
+import styled from "styled-components";
+import Input from "./Input";
 
 const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)/
 
-const SignupForm = () => {
-  const user = useContext(userContext)
+const Form = ({ loginForm }: { loginForm: boolean }) => {
+  const { setUser } = useContext(userContext)
   const [errors, setErrors] = useState<UserError[]>([])
   const navigate = useNavigate()
 
-  const credentialsValid = (credentials: { username: string, email: string, password: string }) => {
+  const credentialsValid = (credentials: { username?: string, email: string, password: string }) => {
     let hasError = false
 
     if (!credentials.email) {
@@ -25,7 +25,7 @@ const SignupForm = () => {
       setErrors(prevErrors => [ ...prevErrors, { type: "email", message: "Email is invalid" } ])
     }
 
-    if (!credentials.username) {
+    if (!credentials.username && !loginForm) { // Ensures it only checks for a username if user is on login
       hasError = true
       setErrors(prevErrors => [ ...prevErrors, { type: "username", message: "Please provide a username" } ])
     }
@@ -73,8 +73,14 @@ const SignupForm = () => {
 
     if (!credentialsValid(credentials)) {
       try {
-        const res = await signup(credentials) as User
-        user.setUser(res)
+        if (loginForm) {
+          const { email, password } = credentials
+          const res = await login({ email, password }) as User
+          setUser(res)
+        } else {
+          const res = await signup(credentials) as User
+          setUser(res)
+        }
 
         sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
         navigate({ to: "/server/self" })
@@ -82,35 +88,37 @@ const SignupForm = () => {
         if (errs[0]?.type) {
           setErrors(prevErrors => [ ...prevErrors, ...errs ])
         } else {
-          setErrors(prevErrors => [ ...prevErrors, { type: "unknown", message: "An unknown error has occurred, try again later." } ])
+          if (typeof(errs) === "string") {
+            setErrors(prevErrors => [ ...prevErrors, { type: "unknown", message: errs } ])
+          } else {
+            setErrors(prevErrors => [ ...prevErrors, { type: "unknown", message: "An unknown error has occurred, try again later." } ])
+          }
         }
       }
     }
   }
 
   return (
-    <SignupWrapper>
-      <h2>Join the party</h2>
-      <Form onSubmit={formSubmitHandler} autoComplete="off">
+    <FormWrapper>
+      <h2>{ loginForm ? "Welcome back" : "Join the party" }</h2>
+      <form onSubmit={formSubmitHandler}>
         <Input name="email" errors={errors} onChange={formChangeHandler} value={credentials.email} />
-
-        <Input name="username" errors={errors} onChange={formChangeHandler} value={credentials.username} />
-
+        { !loginForm && <Input name="username" errors={errors} onChange={formChangeHandler} value={credentials.username} />}
         <Input name="password" errors={errors} onChange={formChangeHandler} value={credentials.password} />
 
-        <Submit type="submit" value="Sign up" />
+        <Submit type="submit" value={ loginForm ? "Log in" : "Sign up" } />
         {(errors && errors.map((err) => {
           if (err.type !== "unknown") return null
           return (
             <ErrorText>{err.message}</ErrorText>
           )
         }))}
-      </Form>
-    </SignupWrapper>
+      </form>
+    </FormWrapper>
   )
 }
 
-const SignupWrapper = styled.div`
+const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,16 +128,16 @@ const SignupWrapper = styled.div`
   h2 {
     font-size: 2rem;
   }
-`
 
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 
-  p {
-    align-self: center;
+    p {
+      align-self: center;
+    }
   }
 `
 
@@ -166,4 +174,4 @@ const ErrorText = styled.p`
   font-size: 16px;
 `
 
-export default SignupForm
+export default Form;
