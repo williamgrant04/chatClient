@@ -14,36 +14,43 @@ const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{
 
 const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.SetStateAction<boolean>>, loginState: boolean }) => {
   const user = useContext(userContext)
-  const [error, setError] = useState<error | null>(null) // Null = no error
+  const [errors, setErrors] = useState<error[]>([])
   const navigate = useNavigate()
 
-  const validateCredentials = (credentials: { username: string, email: string, password: string }) => {
+  const credentialsValid = (credentials: { username: string, email: string, password: string }) => {
+    let hasError = false
+
     if (!credentials.email) {
-      setError({ type: "email", message: "Please provide an email." })
-      return false
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "email", message: "Please provide an email" } ])
     }
 
     if (!emailRegex.test(credentials.email)) {
-      setError({ type: "email", message: "Email is invalid." })
-      return false
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "email", message: "Email is invalid" } ])
     }
 
     if (!credentials.username) {
-      setError({ type: "username", message: "Please provide a username." })
-      return false
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "username", message: "Please provide a username" } ])
     }
 
     if (!credentials.password) {
-      setError({ type: "password", message: "Please provide a password." })
-      return false
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Please provide a password" } ])
     }
 
-    if (credentials.password.length < 6 || credentials.password.length > 128) {
-      setError({ type: "password", message: "Please provide a password between 6 and 128 characters long." })
-      return false
+    if (credentials.password.length < 6) {
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Password too short" } ])
     }
 
-    return true
+    if (credentials.password.length > 128) {
+      hasError = true
+      setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Password too long" } ])
+    }
+
+    return hasError
   }
 
   const [credentials, dispatchCredentials] = useReducer((state: { email: string, username: string, password: string }, action: { type: string, value: string }) => {
@@ -61,26 +68,26 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
 
   const formChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
-    setError(null)
+    setErrors([])
     dispatchCredentials({type: e.target.name, value: e.target.value})
   }
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setError(null)
+    setErrors([])
 
-    if (validateCredentials(credentials)) {
+    if (!credentialsValid(credentials)) {
       try {
         const res = await signup(credentials) as User
         user.setUser(res)
 
         sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
         navigate({ to: "/server/self" })
-      } catch (err: any) {
-        if (err.error.type) {
-          setError(err.error)
+      } catch (errs: any) {
+        if (errs[0]?.type) {
+          setErrors(prevErrors => [ ...prevErrors, ...errs ])
         } else {
-          setError({ type: "unknown", message: "An unknown error has occurred, try again later." })
+          setErrors(prevErrors => [ ...prevErrors, { type: "unknown", message: "An unknown error has occurred, try again later." } ])
         }
       }
     }
@@ -90,14 +97,19 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
     <SignupWrapper>
       <h2>Join the party</h2>
       <Form onSubmit={formSubmitHandler} autoComplete="off">
-        <Input name="email" error={error} onChange={formChangeHandler} value={credentials.email} />
+        <Input name="email" errors={errors} onChange={formChangeHandler} value={credentials.email} />
 
-        <Input name="username" error={error} onChange={formChangeHandler} value={credentials.username} />
+        <Input name="username" errors={errors} onChange={formChangeHandler} value={credentials.username} />
 
-        <Input name="password" error={error} onChange={formChangeHandler} value={credentials.password} />
+        <Input name="password" errors={errors} onChange={formChangeHandler} value={credentials.password} />
 
         <Submit type="submit" value="Sign up" />
-        { (error && error.type === "unknown") && <ErrorText>{error.message}</ErrorText> }
+        {(errors && errors.map((err) => {
+          if (err.type !== "unknown") return null
+          return (
+            <ErrorText>{err.message}</ErrorText>
+          )
+        }))}
 
         <p onClick={() => { setLogin(!loginState) }}>Already have an account?</p>
       </Form>
