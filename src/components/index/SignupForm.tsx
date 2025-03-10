@@ -12,7 +12,7 @@ interface error {
 
 const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)/
 
-const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.SetStateAction<boolean>>, loginState: boolean }) => {
+const SignupForm = () => {
   const user = useContext(userContext)
   const [errors, setErrors] = useState<error[]>([])
   const navigate = useNavigate()
@@ -110,8 +110,6 @@ const SignupForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.S
             <ErrorText>{err.message}</ErrorText>
           )
         }))}
-
-        <p onClick={() => { setLogin(!loginState) }}>Already have an account?</p>
       </Form>
     </SignupWrapper>
   )

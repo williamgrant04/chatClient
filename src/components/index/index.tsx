@@ -16,10 +16,11 @@ const Index = () => {
         </Description>
         <FormWrapper>
           { login ? (
-            <LoginForm setLogin={setLogin} loginState={login}/>
+            <LoginForm />
           ) : (
-            <SignupForm setLogin={setLogin} loginState={login}/>
+            <SignupForm />
           )}
+          <p onClick={() => { setLogin(!login) }}>{ login ? "Not a member?" : "Already have an account?"}</p>
         </FormWrapper>
       </ContentWrapper>
     </IndexWrapper>

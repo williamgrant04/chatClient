@@ -4,7 +4,7 @@ import { useNavigate } from "@tanstack/react-router"
 import userContext from "../../context/UserContext"
 import styled from "styled-components"
 
-const LoginForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.SetStateAction<boolean>>, loginState: boolean }) => {
+const LoginForm = () => {
   const user = useContext(userContext)
   const navigate = useNavigate()
   const [errors, setErrors] = useState<string[]>([])
@@ -47,7 +47,6 @@ const LoginForm = ({ setLogin, loginState }: { setLogin: React.Dispatch<React.Se
         <TextInput type="password" placeholder="Password" name="password" onChange={formChangeHandler} value={credientials.password} />
         <Submit type="submit" value="Log in" />
         <p>{errors}</p>
-        <p onClick={() => { setLogin(!loginState) }}>Not a member?</p>
       </Form>
     </LoginWrapper>
   )
