@@ -2,14 +2,28 @@ import styled from "styled-components"
 import ChannelButton from "./ChannelButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus"
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import CreateChannelModal from "./CreateChannelModal"
 import userContext from "../../context/UserContext"
+import { createConsumer } from "@rails/actioncable"
+import { useParams } from "@tanstack/react-router"
 
-const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Server }) => {
+const cable = createConsumer("ws://localhost:3000/cable")
+
+// TODO: Add an option to turn off the hover, and make it a permanent sidebar
+const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Server }) => {
+  const [channels, setChannels] = useState(props.channels)
   const [open, setOpen] = useState(false)
-  const user = useContext(userContext)
-  // TODO: Add an option to turn off the hover, and make it a permanent sidebar
+  const { user } = useContext(userContext)
+  const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
+
+  useEffect(() => {
+    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: any) => {
+      setChannels(prevChannels => [ ...prevChannels, data ])
+    }})
+
+    return () => cable.disconnect()
+  }, [])
 
   return (
     <Sidebar>
@@ -19,7 +33,7 @@ const ChannelSidebar = ({ channels, server }: { channels: Channel[], server: Ser
       <CreateChannelModal open={open} setOpen={setOpen} server={server}/>
       <ChannelList>
         {
-          user.user?.id === server.owner.id &&
+          user?.id === server.owner.id &&
           <CreateChannel onClick={() => setOpen(true)}>
             <FontAwesomeIcon icon={faPlus}/>&nbsp;New channel
           </CreateChannel>
@@ -82,7 +96,7 @@ const ChannelList = styled.div`
   display: grid;
   justify-items: center;
   align-items: start;
-  gap: 30px;
+  gap: 15px;
   width: 90%;
   margin-bottom: 10px;
 
