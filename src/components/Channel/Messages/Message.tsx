@@ -22,11 +22,10 @@ const Message = ({ message }: { message: Message }) => {
   const editRef = useRef<HTMLDivElement>(null)
   const date = new Date(message.created_at)
 
-  // I want to find a way to not have to create 2 subscriptions
   const handleEditClick = () => {
     setIsEditing(true)
     setContent(message.content)
-    cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received:
+    cable.subscriptions.create({ channel: "MessageChannel", id: params.channelId }, { received:
       (data: { edit: boolean, message: Message }) => {
         if (data.edit && data.message.id === message.id) {
           setContent(data.message.content)

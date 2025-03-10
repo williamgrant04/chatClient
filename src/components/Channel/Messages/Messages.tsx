@@ -20,7 +20,7 @@ const Messages = (props: { messages: Message[] }) => {
   }
 
   useEffect(() => {
-    cable.subscriptions.create({ channel: "ChannelChannel", id: params.channelId }, { received: handleReceived })
+    cable.subscriptions.create({ channel: "MessageChannel", id: params.channelId }, { received: handleReceived })
 
     return () => cable.disconnect()
   }, [])
