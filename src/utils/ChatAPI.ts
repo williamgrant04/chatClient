@@ -7,7 +7,7 @@ interface error {
 }
 
 //* USER AUTH
-export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | error | string[]> => {
+export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | error[] | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/signup`, {
       user: {
@@ -19,7 +19,7 @@ export const signup = async (credentials: { email: string, username: string, pas
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
     return response.data.user as User
   } catch (error: any) {
-    throw error.response.data as error | string[]
+    throw error.response.data as error[] | string[]
   }
 }
 
@@ -33,9 +33,9 @@ export const login = async (credentials: { email: string, password: string }): P
 
     console.log(response)
     localStorage.setItem("token", response.headers.authorization.split(" ")[1])
-    return response.data.user
+    return response.data.user as User
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data as error[] | string[]
   }
 }
 
