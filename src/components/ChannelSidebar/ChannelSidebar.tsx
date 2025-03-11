@@ -18,7 +18,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
   const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
   useEffect(() => {
-    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: any) => {
+    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: Channel) => {
       setChannels(prevChannels => [ ...prevChannels, data ])
     }})
 
