@@ -46,7 +46,7 @@ export const logout = async () => {
     localStorage.removeItem("token")
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -61,7 +61,7 @@ export const loggedin = async (): Promise<{ logged_in: boolean, user?: User }> =
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -77,7 +77,7 @@ export const getServers = async (): Promise<Server[]> => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -92,7 +92,7 @@ export const getServer = async (id: string): Promise<Server> => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -111,7 +111,7 @@ export const newServer = async (name: string): Promise<Server | {errors: string[
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -127,7 +127,7 @@ export const getChannels = async (serverId: string): Promise<Channel[]> => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -142,7 +142,7 @@ export const getChannel = async (id: string) => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -161,7 +161,7 @@ export const createChannel = async (name: string, serverId: number) => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -177,7 +177,7 @@ export const getMessages = async (channelId: string) => {
     console.log(response)
     return response.data
   } catch (error: any) {
-    return error.response.data
+    throw error.response.data
   }
 }
 
@@ -196,7 +196,7 @@ export const sendMessage = async (content: string, channelId: string) => {
 
     console.log(response)
     return true
-  } catch (_error: any) {
+  } catch (error: any) {
     return false
   }
 }
