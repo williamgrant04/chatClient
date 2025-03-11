@@ -11,7 +11,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     const [open, setOpen] = useState(false)
     const modalRef = useRef<ReactModal>(null)
     const [serverName, setServerName] = useState("")
-    const [errors, setErrors] = useState<string[]>([])
+    const [error, setError] = useState("")
 
     useImperativeHandle(ref, () => {
       return {
@@ -23,20 +23,30 @@ const NewServerModal = forwardRef<{ open: () => void }>(
 
     const handleServerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      setErrors([])
-      try {
-        await newServer(serverName.trim())
-        setOpen(false)
+      setError("")
+
+      if (serverName.trim() === "") {
+        setError("Please enter a server name")
         setServerName("")
-      } catch (error: any) {
-        setErrors(error.errors)
+      } else if (serverName.length < 3) {
+        setError("Server name too short")
+      } else if (serverName.length > 50) {
+        setError("Server name too long")
+      } else {
+        try {
+          await newServer(serverName.trim())
+          setOpen(false)
+          setServerName("")
+        } catch (error: any) {
+          setError(error.errors[0])
+        }
       }
     }
 
     const handleClose = () => {
       setOpen(false)
       setServerName("")
-      setErrors([])
+      setError("")
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +54,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     }
 
     return (
-      <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} ref={modalRef}>
+      <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} ref={modalRef} onRequestClose={handleClose}>
         <CloseButton onClick={handleClose}>
           <FontAwesomeIcon icon={faXmarkCircle} />
         </CloseButton>
@@ -53,12 +63,13 @@ const NewServerModal = forwardRef<{ open: () => void }>(
           <ServerInput type="text" placeholder="Server name" name="server" value={serverName} onChange={handleInputChange} />
           <input type="submit" value="Create" id="newserversubmit" hidden/>
         </ServerForm>
-        <p>{errors.join(", ")}</p>
+        <p>{error}</p>
         <CreateButton role="button" tabIndex={0} htmlFor="newserversubmit">Create</CreateButton>
       </Modal>
     )
   }
 )
+
 const Modal = styled(ReactModal)`
   outline: 0;
   position: relative;
