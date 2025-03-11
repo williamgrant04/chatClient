@@ -131,9 +131,9 @@ export const getChannels = async (serverId: string): Promise<Channel[]> => {
   }
 }
 
-export const getChannel = async (id: string) => {
+export const getChannel = async (id: string, serverId: string) => {
   try {
-    const response = await axios.get(`${baseUrl}/channel/${id}`, {
+    const response = await axios.get(`${baseUrl}/server/${serverId}/channel/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
