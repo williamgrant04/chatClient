@@ -38,11 +38,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
             <FontAwesomeIcon icon={faPlus}/>&nbsp;New channel
           </CreateChannel>
         }
-        {channels.map((channel: Channel) => {
-          return (
-            <ChannelButton key={channel.id} channel={channel}/>
-          )
-        })}
+        {channels.map((channel: Channel) => <ChannelButton key={channel.id} channel={channel}/>)}
       </ChannelList>
     </Sidebar>
   )
