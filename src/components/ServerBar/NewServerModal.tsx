@@ -1,52 +1,64 @@
 import ReactModal from "react-modal"
 import { newServer } from "../../utils/ChatAPI"
 import styled from "styled-components"
-import { useState } from "react"
+import { forwardRef, useImperativeHandle, useRef, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons"
 
-const NewServerModal = ({ setOpen, open,  setServerName, serverName }: { setOpen: React.Dispatch<React.SetStateAction<boolean>>, open: boolean, setServerName: React.Dispatch<React.SetStateAction<string>>, serverName: string }) => {
-  ReactModal.setAppElement("#root")
-  const [errors, setErrors] = useState<string[]>([])
+const NewServerModal = forwardRef<{ open: () => void }>(
+  function NewServerModal(_props, ref) {
+    ReactModal.setAppElement("#root")
+    const [open, setOpen] = useState(false)
+    const modalRef = useRef<ReactModal>(null)
+    const [serverName, setServerName] = useState("")
+    const [errors, setErrors] = useState<string[]>([])
 
-  const handleServerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setErrors([])
-    try {
-      await newServer(serverName.trim())
+    useImperativeHandle(ref, () => {
+      return {
+        open() {
+          setOpen(true)
+        }
+      }
+    })
+
+    const handleServerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      setErrors([])
+      try {
+        await newServer(serverName.trim())
+        setOpen(false)
+        setServerName("")
+      } catch (error: any) {
+        setErrors(error.errors)
+      }
+    }
+
+    const handleClose = () => {
       setOpen(false)
       setServerName("")
-    } catch (error: any) {
-      setErrors(error.errors)
+      setErrors([])
     }
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setServerName(e.target.value)
+    }
+
+    return (
+      <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} ref={modalRef}>
+        <CloseButton onClick={handleClose}>
+          <FontAwesomeIcon icon={faXmarkCircle} />
+        </CloseButton>
+        <h2>Create a new server</h2>
+        <ServerForm onSubmit={handleServerSubmit}>
+          <ServerInput type="text" placeholder="Server name" name="server" value={serverName} onChange={handleInputChange} />
+          <input type="submit" value="Create" id="newserversubmit" hidden/>
+        </ServerForm>
+        <p>{errors.join(", ")}</p>
+        <CreateButton role="button" tabIndex={0} htmlFor="newserversubmit">Create</CreateButton>
+      </Modal>
+    )
   }
-
-  const handleClose = () => {
-    setOpen(false)
-    setServerName("")
-    setErrors([])
-  }
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setServerName(e.target.value)
-  }
-
-  return (
-    <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }}>
-      <CloseButton onClick={handleClose}>
-        <FontAwesomeIcon icon={faXmarkCircle} />
-      </CloseButton>
-      <h2>Create a new server</h2>
-      <ServerForm onSubmit={handleServerSubmit}>
-        <ServerInput type="text" placeholder="Server name" name="server" value={serverName} onChange={handleInputChange} />
-        <input type="submit" value="Create" id="newserversubmit" hidden/>
-      </ServerForm>
-      <p>{errors.join(", ")}</p>
-      <CreateButton role="button" tabIndex={0} htmlFor="newserversubmit">Create</CreateButton>
-    </Modal>
-  )
-}
-
+)
 const Modal = styled(ReactModal)`
   outline: 0;
   position: relative;

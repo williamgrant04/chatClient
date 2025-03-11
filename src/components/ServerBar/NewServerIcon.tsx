@@ -1,16 +1,14 @@
-import { useState } from "react"
+import { useRef } from "react"
 import styled from "styled-components"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus"
 import NewServerModal from "./NewServerModal"
 
 const NewServerIcon = () => {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [serverName, setServerName] = useState("")
+  const modalRef = useRef<{ open: () => void }>(null)
 
   const handleModalClick = () => {
-    setServerName("")
-    setModalOpen(true)
+    modalRef.current!.open()
   }
 
   return (
@@ -20,7 +18,7 @@ const NewServerIcon = () => {
           <FontAwesomeIcon icon={faPlus} />
         </Icon>
       </Wrapper>
-      <NewServerModal setOpen={setModalOpen} open={modalOpen} setServerName={setServerName} serverName={serverName}/>
+      <NewServerModal ref={modalRef}/>
     </>
   )
 }
