@@ -13,7 +13,7 @@ const Messages = (props: { messages: Message[] }) => {
 
   const handleReceived = (data: { edit?: boolean, message: Message, destroy?: boolean }) => {
     if (!data.edit && !data.destroy) {
-      setMessages([...messages, data.message])
+      setMessages(prevMessages => [ ...prevMessages, data.message ])
     } else if (data.destroy) {
       setMessages(messages.filter((message) => message.id !== data.message.id))
     }
