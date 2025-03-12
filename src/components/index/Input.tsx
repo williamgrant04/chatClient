@@ -3,20 +3,28 @@ import styled from "styled-components"
 interface InputProps {
   errors: UserError[],
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  value: string,
+  value?: string,
   name: string
 }
 
 const Input = ({ errors, onChange, value, name }: InputProps) => {
   const placeholder = name.charAt(0).toUpperCase() + name.slice(1)
+  let type = "text"
+
+  if (name === "password") type = "password"
+  if (name === "image") type = "file"
 
   const errorText = errors.filter((err) => err.type === name)
 
   return (
     <>
-      <TextInput type={name === "password" ? "password" : "text"} placeholder={placeholder} name={name} onChange={onChange} value={value} />
+      { type === "file" ? (
+        <TextInput type={type} name={name} onChange={onChange} accept="image/png, image/jpeg"/>
+        ) : (
+        <TextInput type={type} placeholder={placeholder} name={name} onChange={onChange} value={value} />
+      )}
       {/* Only want to display one error at a time, so even if there's multiple just display one. */}
-      { errorText && <ErrorText>{errorText[0]?.message}</ErrorText> }
+      { errorText.length > 0 && <ErrorText>{errorText[0]?.message}</ErrorText> }
     </>
   )
 }

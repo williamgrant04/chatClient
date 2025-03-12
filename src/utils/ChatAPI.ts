@@ -1,12 +1,32 @@
 import axios from "axios"
+import { encodeFile } from "./encodeFile"
 const baseUrl = "http://localhost:3000"
 
 //* USER AUTH
-export const signup = async (credentials: { email: string, username: string, password: string }): Promise<User | UserError[] | string[]> => {
+export const bleh = async (stuff: any) => {
+  try {
+    // fetch(`${baseUrl}/bleh`, { method: "POST", body: stuff })
+    const response = await axios.post(`${baseUrl}/bleh`, {
+      image: {
+        type: stuff.type,
+        blob: await encodeFile(stuff)
+      }
+    })
+    return response
+  } catch (e: any) {
+    throw "bleh"
+  }
+}
+
+export const signup = async (credentials: { email: string, username: string, password: string }, image: File): Promise<User | UserError[] | string[]> => {
   try {
     const response = await axios.post(`${baseUrl}/signup`, {
       user: {
-        ...credentials
+        ...credentials,
+        image: {
+          type: image.type,
+          blob: await encodeFile(image)
+        }
       }
     })
 

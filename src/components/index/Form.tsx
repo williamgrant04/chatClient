@@ -1,7 +1,7 @@
 import { useContext, useReducer, useState } from "react";
 import userContext from "../../context/UserContext";
 import { useNavigate } from "@tanstack/react-router";
-import { login, signup } from "../../utils/ChatAPI";
+import { bleh, login, signup } from "../../utils/ChatAPI";
 import styled from "styled-components";
 import Input from "./Input";
 
@@ -10,42 +10,48 @@ const emailRegex = /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{
 const Form = ({ loginForm }: { loginForm: boolean }) => {
   const { setUser } = useContext(userContext)
   const [errors, setErrors] = useState<UserError[]>([])
+  const [image, setImage] = useState<File>()
   const navigate = useNavigate()
 
   const credentialsValid = (credentials: { username?: string, email: string, password: string }) => {
-    let hasError = false
+    let valid = true
 
     if (!credentials.email) {
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "email", message: "Please provide an email" } ])
     }
 
     if (!emailRegex.test(credentials.email)) {
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "email", message: "Email is invalid" } ])
     }
 
     if (!credentials.username && !loginForm) { // Ensures it only checks for a username if user is on login
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "username", message: "Please provide a username" } ])
     }
 
     if (!credentials.password) {
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Please provide a password" } ])
     }
 
     if (credentials.password.length < 6) {
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Password too short" } ])
     }
 
     if (credentials.password.length > 128) {
-      hasError = true
+      valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Password too long" } ])
     }
 
-    return hasError
+    if (!image) {
+      valid = false
+      setErrors(prevErrors => [ ...prevErrors, { type: "image", message: "Please provide an image" } ])
+    }
+
+    return valid
   }
 
   const [credentials, dispatchCredentials] = useReducer((state: { email: string, username: string, password: string }, action: { type: string, value: string }) => {
@@ -64,26 +70,32 @@ const Form = ({ loginForm }: { loginForm: boolean }) => {
   const formChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
     setErrors([])
-    dispatchCredentials({type: e.target.name, value: e.target.value})
+    if (e.target.name === "image") {
+      e.target.files && setImage(e.target.files[0])
+    } else {
+      dispatchCredentials({type: e.target.name, value: e.target.value})
+    }
   }
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setErrors([])
 
-    if (!credentialsValid(credentials)) {
+    if (credentialsValid(credentials)) {
       try {
         if (loginForm) {
           const { email, password } = credentials
           const res = await login({ email, password }) as User
           setUser(res)
         } else {
-          const res = await signup(credentials) as User
-          setUser(res)
+          const res = await signup(credentials, image!) as User
+          console.log(res);
+
+          // setUser(res)
         }
 
-        sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
-        navigate({ to: "/server/self" })
+        // sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
+        // navigate({ to: "/server/self" })
       } catch (errs: any) {
         if (errs[0]?.type) {
           setErrors(prevErrors => [ ...prevErrors, ...errs ])
@@ -105,6 +117,7 @@ const Form = ({ loginForm }: { loginForm: boolean }) => {
         <Input name="email" errors={errors} onChange={formChangeHandler} value={credentials.email} />
         { !loginForm && <Input name="username" errors={errors} onChange={formChangeHandler} value={credentials.username} />}
         <Input name="password" errors={errors} onChange={formChangeHandler} value={credentials.password} />
+        { !loginForm && <Input name="image" errors={errors} onChange={formChangeHandler} /> }
 
         <Submit type="submit" value={ loginForm ? "Log in" : "Sign up" } />
         {(errors && errors.map((err) => {
