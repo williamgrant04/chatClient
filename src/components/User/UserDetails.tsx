@@ -2,16 +2,19 @@ import { useContext, useState } from "react"
 import userContext from "../../context/UserContext"
 import UserDropDown from "./UserDropdown"
 import styled from "styled-components"
+import { AdvancedImage } from '@cloudinary/react'
+import cloudinaryContext from "../../context/CloudinaryContext"
 
 const UserDetails = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const user = useContext(userContext)
+  const { user } = useContext(userContext)
+  const { cloud } = useContext(cloudinaryContext)
 
   return (
     <>
-      <Wrapper>
-        {/* todo: create user profile picture, and maybe a status thing like discord? Not sure, just need more things to put here */}
-        <p style={{ margin: 0 }} onClick={() => { setDropdownOpen(!dropdownOpen) }}>{user.user?.username}</p>
+      <Wrapper onClick={() => { setDropdownOpen(!dropdownOpen) }}>
+        <AdvancedImage cldImg={cloud.image(user?.image)}  />
+        <p>{user?.username}</p>
       </Wrapper>
       <UserDropDown open={dropdownOpen}/>
     </>
@@ -24,12 +27,24 @@ const Wrapper = styled.div`
   border-radius: 10px;
   padding: 5px 10px;
   font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   transition: 0.3s;
 
   &:hover {
     cursor: pointer;
     transform: scale(1.05);
     border-radius: 5px;
+  }
+
+  p { margin: 0; }
+
+  img {
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
+    border-radius: 50%;
   }
 `
 
