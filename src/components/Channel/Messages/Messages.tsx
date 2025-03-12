@@ -15,7 +15,7 @@ const Messages = (props: { messages: Message[] }) => {
     if (!data.edit && !data.destroy) {
       setMessages(prevMessages => [ ...prevMessages, data.message ])
     } else if (data.destroy) {
-      setMessages(messages.filter((message) => message.id !== data.message.id))
+      setMessages(prevMessages => prevMessages.filter((message) => message.id !== data.message.id))
     }
   }
 
