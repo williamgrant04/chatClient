@@ -1,7 +1,7 @@
 import { useContext, useReducer, useState } from "react";
 import userContext from "../../context/UserContext";
 import { useNavigate } from "@tanstack/react-router";
-import { bleh, login, signup } from "../../utils/ChatAPI";
+import { login, signup } from "../../utils/ChatAPI";
 import styled from "styled-components";
 import Input from "./Input";
 
@@ -89,13 +89,11 @@ const Form = ({ loginForm }: { loginForm: boolean }) => {
           setUser(res)
         } else {
           const res = await signup(credentials, image!) as User
-          console.log(res);
-
-          // setUser(res)
+          setUser(res)
         }
 
-        // sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
-        // navigate({ to: "/server/self" })
+        sessionStorage.setItem("loginsignup", "true") // Temporary sessionStorage to prevent the user from going back to the login page
+        navigate({ to: "/server/self" })
       } catch (errs: any) {
         if (errs[0]?.type) {
           setErrors(prevErrors => [ ...prevErrors, ...errs ])
