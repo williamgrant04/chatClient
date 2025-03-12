@@ -25,6 +25,7 @@ interface Server {
   id: number,
   name: string,
   created: string,
+  image: string,
   defaultChannel: Channel,
   owner: User
 }

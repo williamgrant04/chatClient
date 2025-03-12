@@ -1,16 +1,19 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import ServerHover from "./ServerHover"
 import { Link } from "@tanstack/react-router"
 import styled from "styled-components"
+import { AdvancedImage } from "@cloudinary/react"
+import cloudinaryContext from "../../context/CloudinaryContext"
 
 const ServerIcon = ({ server }: { server: Server }) => {
   const [show, setShow] = useState(false)
+  const { cloud } = useContext(cloudinaryContext)
 
   return (
     <Wrapper onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
       <IconLink to={`/server/${server.id}/${server.defaultChannel.id}`}>
         {/* TODO: implement actual server icons instead of placeholders */}
-        <Icon src="https://placehold.co/50" alt={server.name} />
+        <Icon cldImg={cloud.image(server.image)} />
       </IconLink>
       <ServerHover server={server} show={show}/>
     </Wrapper>
@@ -29,11 +32,12 @@ const IconLink = styled(Link)`
   width: 50px;
 `
 
-const Icon = styled.img`
+const Icon = styled(AdvancedImage)`
   height: 50px;
   width: 50px;
   border-radius: 10px;
   cursor: pointer;
+  object-fit: cover;
   transition: 0.2s;
 
   &:hover {

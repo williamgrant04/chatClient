@@ -26,19 +26,27 @@ const NewServerIcon = () => {
 const Wrapper = styled.div`
   height: 50px;
   width: 50px;
-`
-
-const Icon = styled.svg`
   background-color: #ddd;
-  height: 50px;
-  width: 50px;
   border-radius: 10px;
   cursor: pointer;
   transition: 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
     transform: scale(1.06); // Subtle effect, 1.1 would be too much
     border-radius: 5px;
+  }
+`
+
+const Icon = styled.svg`
+  height: 35px;
+  width: 35px;
+
+  svg {
+    height: 30px;
+    width: 30px;
   }
 `
 

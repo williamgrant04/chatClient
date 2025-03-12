@@ -101,11 +101,15 @@ export const getServer = async (id: string): Promise<Server> => {
   }
 }
 
-export const newServer = async (name: string): Promise<Server | {errors: string[]}> => {
+export const newServer = async (name: string, image: File): Promise<Server | {errors: string[]}> => {
   try {
     const response = await axios.post(`${baseUrl}/servers/new`, {
       server: {
-        name
+        name,
+        image: {
+          type: image.type,
+          blob: await encodeFile(image)
+        }
       }
     }, {
       headers: {

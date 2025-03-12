@@ -11,6 +11,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     const [open, setOpen] = useState(false)
     const modalRef = useRef<ReactModal>(null)
     const [serverName, setServerName] = useState("")
+    const [image, setImage] = useState<File>()
     const [error, setError] = useState("")
 
     useImperativeHandle(ref, () => {
@@ -32,9 +33,11 @@ const NewServerModal = forwardRef<{ open: () => void }>(
         setError("Server name too short")
       } else if (serverName.length > 50) {
         setError("Server name too long")
+      } else if (!image) {
+        setError("Please provide an image")
       } else {
         try {
-          await newServer(serverName.trim())
+          await newServer(serverName.trim(), image)
           setOpen(false)
           setServerName("")
         } catch (error: any) {
@@ -50,7 +53,11 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     }
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setServerName(e.target.value)
+      if (e.target.files) {
+        setImage(e.target.files[0])
+      } else {
+        setServerName(e.target.value)
+      }
     }
 
     return (
@@ -61,6 +68,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
         <h2>Create a new server</h2>
         <ServerForm onSubmit={handleServerSubmit}>
           <ServerInput type="text" placeholder="Server name" name="server" value={serverName} onChange={handleInputChange} />
+          <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png"/>
           <input type="submit" value="Create" id="newserversubmit" hidden/>
         </ServerForm>
         <p>{error}</p>
