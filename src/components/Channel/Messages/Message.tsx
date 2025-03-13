@@ -9,12 +9,15 @@ import { faPen } from "@fortawesome/free-solid-svg-icons/faPen"
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus"
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark"
+import { AdvancedImage } from "@cloudinary/react"
+import cloudinaryContext from "../../../context/CloudinaryContext"
 
 
 const cable = createConsumer("ws://localhost:3000/cable")
 
 const Message = ({ message }: { message: Message }) => {
-  const user = useContext(userContext)
+  const { user } = useContext(userContext)
+  const { cloud } = useContext(cloudinaryContext)
   const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
   const [isEditing, setIsEditing] = useState(false)
   const [content, setContent] = useState(message.content)
@@ -72,33 +75,37 @@ const Message = ({ message }: { message: Message }) => {
 
   return (
     <MessageWrapper onMouseEnter={()=>setHovering(true)} onMouseLeave={()=>setHovering(false)}>
-      <MessageDetails>
-        <h3>{message.author.username}</h3>
-        <p>{date.toDateString()}</p>
-      </MessageDetails>
-      {isEditing ?
-        <MessageEdit ref={editRef}>
-          <MessageInput type="text" value={content} onChange={ (e) => setContent(e.target.value) }/>
-          <div>
-            <Action onClick={handleMessageEdit}>
-              <FontAwesomeIcon icon={faCheck} />
+      <AuthorProfilePicture cldImg={cloud.image(message.author.image)} />
+      <div>
+        <MessageDetails>
+          <h3>{message.author.username}</h3>
+          <p>{date.toDateString()}</p>
+        </MessageDetails>
+        {isEditing ?
+          <MessageEdit ref={editRef}>
+            <MessageInput type="text" value={content} onChange={ (e) => setContent(e.target.value) }/>
+            <div>
+              <Action onClick={handleMessageEdit}>
+                <FontAwesomeIcon icon={faCheck} />
+              </Action>
+              <Action onClick={handleCancelEdit}>
+                <FontAwesomeIcon icon={faXmark} />
+              </Action>
+            </div>
+          </MessageEdit>
+          : <p>{content}</p>}
+        {message.author.id === user?.id && !isEditing && // Only show the edit button if the user is the author of the message
+          <MessageActions $hovering={hovering}>
+            <Action onClick={handleEditClick}>
+              <FontAwesomeIcon icon={faPen} />
             </Action>
-            <Action onClick={handleCancelEdit}>
-              <FontAwesomeIcon icon={faXmark} />
+            {/* This will be a delete button */}
+            <Action onClick={handleDeleteClick}>
+              <FontAwesomeIcon icon={faMinus} />
             </Action>
-          </div>
-        </MessageEdit>
-        : <p>{content}</p>}
-      {message.author.id === user.user?.id && !isEditing && // Only show the edit button if the user is the author of the message
-      <MessageActions $hovering={hovering}>
-        <Action onClick={handleEditClick}>
-          <FontAwesomeIcon icon={faPen} />
-        </Action>
-        {/* This will be a delete button */}
-        <Action onClick={handleDeleteClick}>
-          <FontAwesomeIcon icon={faMinus} />
-        </Action>
-      </MessageActions>}
+          </MessageActions>
+        }
+      </div>
     </MessageWrapper>
   )
 }
@@ -106,8 +113,9 @@ const Message = ({ message }: { message: Message }) => {
 const MessageWrapper = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
   padding: 5px 20px 5px 30px;
   margin: 5px 0;
   width: -webkit-fill-available;
@@ -188,6 +196,13 @@ const MessageInput = styled.input`
   &:focus {
     border-radius: 5px;
   }
+`
+
+const AuthorProfilePicture = styled(AdvancedImage)`
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 50%;
 `
 
 export default Message

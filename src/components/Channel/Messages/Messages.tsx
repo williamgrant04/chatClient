@@ -13,14 +13,18 @@ const Messages = (props: { messages: Message[] }) => {
 
   const handleReceived = (data: { edit?: boolean, message: Message, destroy?: boolean }) => {
     if (!data.edit && !data.destroy) {
-      setMessages(prevMessages => [ ...prevMessages, data.message ])
+      setMessages(prevMessages => {
+        const newArr = [...prevMessages]
+        newArr.unshift(data.message)
+        return newArr
+      })
     } else if (data.destroy) {
       setMessages(prevMessages => prevMessages.filter((message) => message.id !== data.message.id))
     }
   }
 
   useEffect(() => {
-    cable.subscriptions.create({ channel: "MessageChannel", id: params.channelId }, { received: handleReceived })
+    messages.reverse()
 
     return () => cable.disconnect()
   }, [])
@@ -35,6 +39,7 @@ const Messages = (props: { messages: Message[] }) => {
 
   useEffect(() => {
     setMessages(props.messages)
+    cable.subscriptions.create({ channel: "MessageChannel", id: params.channelId }, { received: handleReceived })
 
     return () => {
       cable.disconnect()
@@ -43,18 +48,20 @@ const Messages = (props: { messages: Message[] }) => {
 
   return (
     <MessagesWrapper>
+      <div ref={scrollRef}></div>
       {messages.map((message) => {
         return (
           <Message key={message.id} message={message} />
         )
       })}
-      <div ref={scrollRef}></div>
     </MessagesWrapper>
   )
 }
 
 const MessagesWrapper = styled.div`
   position: relative;
+  display: flex;
+  flex-direction: column-reverse;
   flex: 1 1 auto;
   overflow-x: hidden;
   overflow-y: scroll;
