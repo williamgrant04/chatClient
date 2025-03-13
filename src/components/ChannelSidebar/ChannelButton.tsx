@@ -1,27 +1,16 @@
 import { Link, useParams } from "@tanstack/react-router"
-import { useState } from "react"
 import styled from "styled-components"
 import ChannelContextMenu from "./ChannelContextMenu"
-
-const initialContextMenu = {
-  shown: false,
-  x: 0,
-  y: 0
-}
+import { useContextMenu } from "../../hooks/useContextMenu"
 
 const ChannelButton = ({ channel } : { channel: Channel }) => {
   const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
-  const [contextMenu, setContextMenu] = useState(initialContextMenu)
-
-  const channelContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault()
-    setContextMenu({ shown: true, x: e.pageX, y: e.pageY })
-  }
+  const { onMenu, close, menu } = useContextMenu()
 
   return (
     <>
-      {contextMenu.shown && <ChannelContextMenu position={{ x: contextMenu.x, y: contextMenu.y }} close={()=> setContextMenu(initialContextMenu)}/>}
-      <ChannelLink to={`${channel.id}`} from={`/server/${serverId}`} onContextMenu={channelContextMenu}>{channel.name}</ChannelLink>
+      {menu.shown && <ChannelContextMenu position={ menu.position } close={close}/>}
+      <ChannelLink to={`${channel.id}`} from={`/server/${serverId}`} onContextMenu={onMenu}>{channel.name}</ChannelLink>
     </>
   )
 }
