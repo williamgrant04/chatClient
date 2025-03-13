@@ -20,8 +20,8 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
   useEffect(() => {
     setChannels(props.channels)
 
-    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: Channel) => {
-      setChannels(prevChannels => [ ...prevChannels, data ])
+    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: { channel: Channel }) => {
+      setChannels(prevChannels => [ ...prevChannels, data.channel ])
     }})
 
     return () => cable.disconnect()

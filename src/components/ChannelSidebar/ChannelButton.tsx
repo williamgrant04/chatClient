@@ -1,9 +1,11 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useParams } from "@tanstack/react-router"
 import styled from "styled-components"
 
 const ChannelButton = ({ channel } : { channel: Channel }) => {
+  const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
+
   return (
-    <ChannelLink to={`${channel.id}`}>{channel.name}</ChannelLink>
+    <ChannelLink to={`${channel.id}`} from={`/server/${serverId}`}>{channel.name}</ChannelLink>
   )
 }
 
