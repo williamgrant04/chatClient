@@ -174,6 +174,21 @@ export const createChannel = async (name: string, serverId: number) => {
   }
 }
 
+export const deleteChannel = async (id: number) => {
+  try {
+    const response = await axios.delete(`${baseUrl}/channel/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+
+    console.log(response)
+    return response.data
+  } catch (error: any) {
+    throw error.response.data
+  }
+}
+
 //* MESSAGES
 export const getMessages = async (channelId: string) => {
   try {

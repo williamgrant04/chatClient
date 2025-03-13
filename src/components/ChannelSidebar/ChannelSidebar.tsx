@@ -21,8 +21,12 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
   useEffect(() => {
     setChannels(props.channels)
 
-    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: { channel: Channel }) => {
-      setChannels(prevChannels => [ ...prevChannels, data.channel ])
+    cable.subscriptions.create({ channel: "ChannelChannel", id: serverId }, { received: (data: { destroy?: boolean, channel: Channel }) => {
+      if (data.destroy) {
+        setChannels(prevChannels => prevChannels.filter(channel => channel.id !== data.channel.id))
+      } else {
+        setChannels(prevChannels => [ ...prevChannels, data.channel ])
+      }
     }})
 
     return () => cable.disconnect()
@@ -41,7 +45,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
             <FontAwesomeIcon icon={faPlus}/>&nbsp;New channel
           </CreateChannel>
         }
-        {channels.map((channel: Channel) => <ChannelButton key={channel.id} channel={channel} hovering={hovering}/>)}
+        {channels.map((channel: Channel) => <ChannelButton key={channel.id} channel={channel} hovering={hovering} {...{server}}/>)}
       </ChannelList>
     </Sidebar>
   )

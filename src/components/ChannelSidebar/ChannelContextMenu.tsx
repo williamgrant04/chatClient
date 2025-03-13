@@ -1,23 +1,36 @@
 import styled from "styled-components";
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { useRef } from "react";
+import { deleteChannel } from "../../utils/ChatAPI";
+import { useNavigate, useParams } from "@tanstack/react-router";
 
 interface ContextMenuProps {
   position: {
     x: number,
     y: number
   },
-  close: () => void
+  close: () => void,
+  channel: Channel,
+  server: Server
 }
 
-const ChannelContextMenu = ({ position, close }: ContextMenuProps) => {
+const ChannelContextMenu = ({ position, close, channel, server }: ContextMenuProps) => {
   const menuRef = useRef<HTMLDivElement>(null)
+  const { channelId, serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
+  const navigate = useNavigate()
   useClickOutside(menuRef, close)
+
+  const deleteChannelHandler = async () => {
+    await deleteChannel(channel.id)
+    if (channelId === `${channel.id}`) {
+      navigate({ to: `/server/${serverId}/${server.defaultChannel.id}` })
+    }
+  }
 
   return (
     <Menu $position={position} ref={menuRef}>
       <MenuButton>Edit channel</MenuButton>
-      <MenuButton>Delete channel</MenuButton>
+      <MenuButton onClick={deleteChannelHandler}>Delete channel</MenuButton>
     </Menu>
   )
 }
@@ -32,7 +45,7 @@ const Menu = styled.div<{ $position: { x: number, y: number } }>`
 `
 
 const MenuButton = styled.button`
-  
+
 `
 
 export default ChannelContextMenu;

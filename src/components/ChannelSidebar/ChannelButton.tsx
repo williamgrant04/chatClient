@@ -5,16 +5,17 @@ import { useContextMenu } from "../../hooks/useContextMenu"
 
 interface ChannelButtonProps {
   channel: Channel,
-  hovering: boolean
+  hovering: boolean,
+  server: Server
 }
 
-const ChannelButton = ({ channel, hovering }: ChannelButtonProps) => {
+const ChannelButton = ({ channel, hovering, server }: ChannelButtonProps) => {
   const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
   const { onMenu, close, menu } = useContextMenu(hovering)
 
   return (
     <>
-      {menu.shown && <ChannelContextMenu position={ menu.position } close={close}/>}
+      {menu.shown && <ChannelContextMenu position={ menu.position } {...{close}} {...{channel}} {...{server}}/>}
       <ChannelLink to={`${channel.id}`} from={`/server/${serverId}`} onContextMenu={onMenu}>{channel.name}</ChannelLink>
     </>
   )
