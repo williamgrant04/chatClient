@@ -24,8 +24,6 @@ const Messages = (props: { messages: Message[] }) => {
   }
 
   useEffect(() => {
-    messages.reverse()
-
     return () => cable.disconnect()
   }, [])
 
