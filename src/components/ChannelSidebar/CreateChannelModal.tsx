@@ -1,16 +1,14 @@
 import ReactModal from "react-modal"
 import { createChannel } from "../../utils/ChatAPI"
 import styled from "styled-components"
-import { useState } from "react"
+import { memo, useState } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons"
 
-const CreateChannelModal = ({ setOpen, open, server }: { setOpen: React.Dispatch<React.SetStateAction<boolean>>, open: boolean, server: Server }) => {
+const CreateChannelModal = memo(function CreateChannelModal({ setOpen, open, server }: { setOpen: React.Dispatch<React.SetStateAction<boolean>>, open: boolean, server: Server }) {
   ReactModal.setAppElement("#root")
   const [errors, setErrors] = useState<string[]>([])
   const [channelName, setChannelName] = useState("")
-
-  console.log(server)
 
   const handleChannelSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,7 +46,7 @@ const CreateChannelModal = ({ setOpen, open, server }: { setOpen: React.Dispatch
       <CreateButton role="button" tabIndex={0} htmlFor="newchannelsubmit">Create</CreateButton>
     </Modal>
   )
-}
+})
 
 const Modal = styled(ReactModal)`
   outline: 0;
