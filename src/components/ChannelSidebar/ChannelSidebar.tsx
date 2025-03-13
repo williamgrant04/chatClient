@@ -14,6 +14,7 @@ const cable = createConsumer("ws://localhost:3000/cable")
 const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Server }) => {
   const [channels, setChannels] = useState(props.channels)
   const [open, setOpen] = useState(false)
+  const [hovering, setHovering] = useState(false)
   const { user } = useContext(userContext)
   const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
 
@@ -28,7 +29,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
   }, [serverId])
 
   return (
-    <Sidebar>
+    <Sidebar onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
       <ServerDetails>
         <p>{server.name}</p>
       </ServerDetails>
@@ -40,7 +41,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
             <FontAwesomeIcon icon={faPlus}/>&nbsp;New channel
           </CreateChannel>
         }
-        {channels.map((channel: Channel) => <ChannelButton key={channel.id} channel={channel}/>)}
+        {channels.map((channel: Channel) => <ChannelButton key={channel.id} channel={channel} hovering={hovering}/>)}
       </ChannelList>
     </Sidebar>
   )

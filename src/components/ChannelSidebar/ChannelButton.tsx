@@ -3,9 +3,14 @@ import styled from "styled-components"
 import ChannelContextMenu from "./ChannelContextMenu"
 import { useContextMenu } from "../../hooks/useContextMenu"
 
-const ChannelButton = ({ channel } : { channel: Channel }) => {
+interface ChannelButtonProps {
+  channel: Channel,
+  hovering: boolean
+}
+
+const ChannelButton = ({ channel, hovering }: ChannelButtonProps) => {
   const { serverId } = useParams({ from: "/_auth/server/$serverId/$channelId" })
-  const { onMenu, close, menu } = useContextMenu()
+  const { onMenu, close, menu } = useContextMenu(hovering)
 
   return (
     <>

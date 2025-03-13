@@ -1,4 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+interface MenuState {
+  shown: boolean,
+  position: {
+    x: number,
+    y: number
+  }
+}
+
+interface MenuValues {
+  onMenu: (e: React.MouseEvent) => void,
+  close: () => void,
+  menu: MenuState
+}
 
 const initial = {
   shown: false,
@@ -8,8 +22,14 @@ const initial = {
   }
 }
 
-export const useContextMenu = () => {
-  const [menu, setMenu] = useState(initial)
+export const useContextMenu = (hovering? : boolean): MenuValues => {
+  const [menu, setMenu] = useState<MenuState>(initial)
+
+  useEffect(() => {
+    if (hovering === false) {
+      setMenu(initial)
+    }
+  }, [hovering])
 
   const onMenuEvent = (e: React.MouseEvent) => {
     e.preventDefault()
