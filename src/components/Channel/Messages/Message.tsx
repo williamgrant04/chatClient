@@ -45,7 +45,7 @@ const Message = ({ message }: { message: Message }) => {
   return (
     <MessageWrapper onMouseEnter={()=>setHovering(true)} onMouseLeave={()=>setHovering(false)}>
       <AuthorProfilePicture cldImg={cloud.image(message.author.image)} />
-      <div>
+      <MessageContent>
         <MessageDetails>
           <h3>{message.author.username}</h3>
           <p>{date.toDateString()}</p>
@@ -62,7 +62,7 @@ const Message = ({ message }: { message: Message }) => {
             </Action>
           </MessageActions>
         }
-      </div>
+      </MessageContent>
     </MessageWrapper>
   )
 }
@@ -129,6 +129,10 @@ const Action = styled.button`
     background-color: #909090;
     color: black;
   }
+`
+
+const MessageContent = styled.div`
+  width: 100%;
 `
 
 const AuthorProfilePicture = styled(AdvancedImage)`
