@@ -2,12 +2,12 @@ import styled from "styled-components"
 import { deleteMessage, editMessage } from "../../../utils/ChatAPI"
 import { useContext, useEffect, useRef, useState } from "react"
 import userContext from "../../../context/UserContext"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen"
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus"
 import { AdvancedImage } from "@cloudinary/react"
 import cloudinaryContext from "../../../context/CloudinaryContext"
 import EditMessage from "./EditMessage"
+import MessageAction from "./MessageAction"
 
 const Message = ({ message }: { message: Message }) => {
   const { user } = useContext(userContext)
@@ -51,15 +51,10 @@ const Message = ({ message }: { message: Message }) => {
           <p>{date.toDateString()}</p>
         </MessageDetails>
         {isEditing ? <EditMessage onEdit={editHandler} onEditSuccess={editSuccessHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
-        {message.author.id === user?.id && !isEditing && // Only show the edit button if the user is the author of the message
+        {message.author.id === user?.id && !isEditing && // Only show actions if the user is the author
           <MessageActions $hovering={hovering}>
-            <Action onClick={() => setIsEditing(true)}>
-              <FontAwesomeIcon icon={faPen} />
-            </Action>
-            {/* This will be a delete button */}
-            <Action onClick={() => deleteMessage(message.id)}>
-              <FontAwesomeIcon icon={faMinus} />
-            </Action>
+            <MessageAction onClick={() => setIsEditing(true)} icon={faPen} />
+            <MessageAction onClick={() => deleteMessage(message.id)} icon={faMinus} />
           </MessageActions>
         }
       </MessageContent>
@@ -107,28 +102,6 @@ const MessageActions = styled.div<{ $hovering: boolean }>`
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-`
-
-const Action = styled.button`
-  background-color: black;
-  border: none;
-  cursor: pointer;
-  color: #f0f0f0;
-  transition: 0.3s;
-  padding: 5px 10px;
-
-  &:first-child {
-    border-radius: 10px 0 0 10px;
-  }
-
-  &:last-child {
-    border-radius: 0 10px 10px 0;
-  }
-
-  &:hover {
-    background-color: #909090;
-    color: black;
-  }
 `
 
 const MessageContent = styled.div`

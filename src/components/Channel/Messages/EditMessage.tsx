@@ -70,6 +70,10 @@ const MessageActions = styled.div`
   box-sizing: border-box;
   display: flex;
   height: 100%;
+
+  & > button:first-child {
+    border-radius: 0;
+  }
 `
 
 export default EditMessage;

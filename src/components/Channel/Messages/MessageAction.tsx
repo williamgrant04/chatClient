@@ -25,6 +25,10 @@ const Action = styled.button`
   transition: 0.3s;
   padding: 5px 10px;
 
+  &:first-child {
+    border-radius: 10px 0 0 10px;
+  }
+
   &:last-child {
     border-radius: 0 10px 10px 0;
   }
