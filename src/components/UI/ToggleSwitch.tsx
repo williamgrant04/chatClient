@@ -18,8 +18,10 @@ const Switch = styled.input`
   -webkit-appearance: none;
   appearance: none;
   position: relative;
-  width: 50px;
-  height: 30px;
+  aspect-ratio: 5/3;
+  min-width: 25px;
+  width: inherit;
+  height: inherit;
   border-radius: 25px;
   background-color: #bbb;
   transition: 0.3s;
@@ -33,9 +35,9 @@ const Switch = styled.input`
     left: 30%;
     transform: translate(-50%, -50%);
     transition: 0.3s;
-    width: 1.25rem;
-    height: 1.25rem;
-    border-radius: 50%;
+    height: 65%;
+    aspect-ratio: 1/1;
+    border-radius: 25px;
     background-color: white;
   }
 
@@ -49,6 +51,7 @@ const Switch = styled.input`
 
   &:active::after {
     width: 55%;
+    aspect-ratio: auto;
     left: 50%;
     border-radius: 25px;
   }
