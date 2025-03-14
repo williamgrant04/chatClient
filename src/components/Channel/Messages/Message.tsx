@@ -1,76 +1,45 @@
 import styled from "styled-components"
 import { deleteMessage, editMessage } from "../../../utils/ChatAPI"
 import { useContext, useEffect, useRef, useState } from "react"
-import { createConsumer } from "@rails/actioncable"
-import { useParams } from "@tanstack/react-router"
 import userContext from "../../../context/UserContext"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPen } from "@fortawesome/free-solid-svg-icons/faPen"
 import { faMinus } from "@fortawesome/free-solid-svg-icons/faMinus"
-import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck"
-import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark"
 import { AdvancedImage } from "@cloudinary/react"
 import cloudinaryContext from "../../../context/CloudinaryContext"
-
-
-const cable = createConsumer("ws://localhost:3000/cable")
+import EditMessage from "./EditMessage"
 
 const Message = ({ message }: { message: Message }) => {
   const { user } = useContext(userContext)
   const { cloud } = useContext(cloudinaryContext)
-  const params = useParams({ from: "/_auth/server/$serverId/$channelId" })
   const [isEditing, setIsEditing] = useState(false)
   const [content, setContent] = useState(message.content)
   const [hovering, setHovering] = useState(false)
   const editRef = useRef<HTMLDivElement>(null)
   const date = new Date(message.created_at)
 
-  const handleEditClick = () => {
-    setIsEditing(true)
-    setContent(message.content)
-    cable.subscriptions.create({ channel: "MessageChannel", id: params.channelId }, { received:
-      (data: { edit: boolean, message: Message }) => {
-        if (data.edit && data.message.id === message.id) {
-          setContent(data.message.content)
-        }
-      }
-    })
-  }
-
-  const handleDeleteClick = () => {
-    deleteMessage(message.id)
-  }
-
   useEffect(() => {
     editRef.current?.scrollIntoView({ behavior: "smooth" })
 
     if (isEditing) document.addEventListener("keydown", function cancel(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        handleCancelEdit()
+        setIsEditing(false)
         document.removeEventListener("keydown", cancel)
       }
     })
   }, [isEditing])
 
-  const handleCancelEdit = () => {
-    setIsEditing(false)
-    cable.disconnect()
-  }
-
-  useEffect(() => {
-    return () => {
-      cable.disconnect()
-    }
-  }, [])
-
-  const handleMessageEdit = async () => {
+  const editHandler = async (content: string) => {
     try {
       await editMessage(content, message.id)
-      setIsEditing(false)
-      cable.disconnect()
     } catch (err: any) {
       // The error will be because the message content is empty, so I don't want to close the edit box
     }
+  }
+
+  const editSuccessHandler = (content: string) => {
+    setContent(content)
+    setIsEditing(false)
   }
 
   return (
@@ -81,26 +50,14 @@ const Message = ({ message }: { message: Message }) => {
           <h3>{message.author.username}</h3>
           <p>{date.toDateString()}</p>
         </MessageDetails>
-        {isEditing ?
-          <MessageEdit ref={editRef}>
-            <MessageInput type="text" value={content} onChange={ (e) => setContent(e.target.value) }/>
-            <div>
-              <Action onClick={handleMessageEdit}>
-                <FontAwesomeIcon icon={faCheck} />
-              </Action>
-              <Action onClick={handleCancelEdit}>
-                <FontAwesomeIcon icon={faXmark} />
-              </Action>
-            </div>
-          </MessageEdit>
-          : <p>{content}</p>}
+        {isEditing ? <EditMessage onEdit={editHandler} onEditSuccess={editSuccessHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
         {message.author.id === user?.id && !isEditing && // Only show the edit button if the user is the author of the message
           <MessageActions $hovering={hovering}>
-            <Action onClick={handleEditClick}>
+            <Action onClick={() => setIsEditing(true)}>
               <FontAwesomeIcon icon={faPen} />
             </Action>
             {/* This will be a delete button */}
-            <Action onClick={handleDeleteClick}>
+            <Action onClick={() => deleteMessage(message.id)}>
               <FontAwesomeIcon icon={faMinus} />
             </Action>
           </MessageActions>
@@ -171,30 +128,6 @@ const Action = styled.button`
   &:hover {
     background-color: #909090;
     color: black;
-  }
-`
-
-const MessageEdit = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: #f0f0f0;
-  padding: 10px 15px;
-  border-radius: 10px;
-
-  div { align-self: flex-end; }
-`
-
-const MessageInput = styled.input`
-  padding: 5px 10px;
-  font-size: 1.1rem;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  transition: 0.3s;
-  margin-bottom: 5px;
-
-  &:focus {
-    border-radius: 5px;
   }
 `
 
