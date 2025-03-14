@@ -27,6 +27,8 @@ const EditMessage = forwardRef<HTMLDivElement, EditMessageProps>(function EditMe
         }
       }
     })
+
+    return () => cable.disconnect()
   }, [])
 
   return (
