@@ -30,6 +30,7 @@ const Message = ({ message }: { message: Message }) => {
   }, [isEditing])
 
   const editHandler = async (content: string) => {
+    if (!content) return
     try {
       await editMessage(content, message.id)
     } catch (err: any) {
