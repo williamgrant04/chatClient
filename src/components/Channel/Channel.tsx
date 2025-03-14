@@ -2,10 +2,14 @@ import styled from "styled-components"
 import ChannelDetails from "./ChannelDetails"
 import MessageBar from "./Messages/MessageBar"
 import Messages from "./Messages/Messages"
+import { useContext } from "react"
+import settingsContext from "../../context/SettingsContext"
 
 const Channel = ({ messages, channel }: { messages: Message[], channel: Channel }) => {
+  const { permanent } = useContext(settingsContext)
+
   return (
-    <ChannelWrapper>
+    <ChannelWrapper $permanent={permanent}>
       <ChannelDetails channel={channel}/>
       <ChannelContent>
         <Messages messages={messages}/>
@@ -15,9 +19,9 @@ const Channel = ({ messages, channel }: { messages: Message[], channel: Channel 
   )
 }
 
-const ChannelWrapper = styled.div`
+const ChannelWrapper = styled.div<{ $permanent: boolean }>`
   background-color: #aaa;
-  margin-left: 40px;
+  margin-left: ${props => props.$permanent ? "0" : "40px"};
   width: -webkit-fill-available;
   display: flex;
   flex-direction: column;

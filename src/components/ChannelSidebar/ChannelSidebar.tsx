@@ -7,11 +7,14 @@ import CreateChannelModal from "./CreateChannelModal"
 import userContext from "../../context/UserContext"
 import { createConsumer } from "@rails/actioncable"
 import { useParams } from "@tanstack/react-router"
+import ToggleSwitch from "../UI/ToggleSwitch"
+import settingsContext from "../../context/SettingsContext"
 
 const cable = createConsumer("ws://localhost:3000/cable")
 
 // TODO: Add an option to turn off the hover, and make it a permanent sidebar
 const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Server }) => {
+  const { permanent, setPermanent } = useContext(settingsContext)
   const [channels, setChannels] = useState(props.channels)
   const [open, setOpen] = useState(false)
   const [hovering, setHovering] = useState(false)
@@ -32,10 +35,21 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
     return () => cable.disconnect()
   }, [serverId])
 
+  const sidebarHoverHandler = (hovering: boolean) => {
+    if (permanent) return
+    setHovering(hovering)
+  }
+
+  const sidebarToggleHandler = (state: boolean) => {
+    setPermanent(state)
+    localStorage.setItem("permanent", JSON.stringify(state))
+  }
+
   return (
-    <Sidebar onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
+    <Sidebar onMouseEnter={() => sidebarHoverHandler(true)} onMouseLeave={() => sidebarHoverHandler(false)} $permanent={permanent}>
       <ServerDetails>
         <p>{server.name}</p>
+        <ToggleSwitch onToggle={sidebarToggleHandler} toggled={permanent}/>
       </ServerDetails>
       <CreateChannelModal open={open} setOpen={setOpen} server={server}/>
       <ChannelList>
@@ -51,16 +65,16 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
   )
 }
 
-const Sidebar = styled.div`
-  position: absolute;
+const Sidebar = styled.div<{ $permanent: boolean }>`
+  position: ${props => props.$permanent ? "relative" : "absolute"};
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #a0a0a0;
   height: -webkit-fill-available;
   width: 250px;
-  left: -250px;
-  padding-right: 40px;
+  left: ${props => props.$permanent ? "0" : "-250px"};
+  padding-right: ${props => props.$permanent ? "0" : "40px"};
   gap: 10px;
   transition: 0.3s;
   z-index: 1;
