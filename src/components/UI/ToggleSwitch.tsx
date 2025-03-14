@@ -21,7 +21,7 @@ const Switch = styled.input`
   width: 50px;
   height: 30px;
   border-radius: 25px;
-  background-color: red;
+  background-color: #bbb;
   transition: 0.3s;
   outline: none;
   cursor: pointer;
@@ -40,11 +40,17 @@ const Switch = styled.input`
   }
 
   &:checked {
-    background-color: blue;
+    background-color: #1da830;
 
     &::after {
       left: 70%;
     }
+  }
+
+  &:active::after {
+    width: 55%;
+    left: 50%;
+    border-radius: 25px;
   }
 `
 
