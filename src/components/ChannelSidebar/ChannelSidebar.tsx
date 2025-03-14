@@ -49,7 +49,9 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
     <Sidebar onMouseEnter={() => sidebarHoverHandler(true)} onMouseLeave={() => sidebarHoverHandler(false)} $permanent={permanent}>
       <ServerDetails>
         <p>{server.name}</p>
-        <ToggleSwitch onToggle={sidebarToggleHandler} toggled={permanent}/>
+        <ToggleWrapper>
+          <ToggleSwitch onToggle={sidebarToggleHandler} toggled={permanent}/>
+        </ToggleWrapper>
       </ServerDetails>
       <CreateChannelModal open={open} setOpen={setOpen} server={server}/>
       <ChannelList>
@@ -99,6 +101,7 @@ const Sidebar = styled.div<{ $permanent: boolean }>`
 const ServerDetails = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: -webkit-fill-available;
   height: 30px;
   padding: 10px 20px;
@@ -163,6 +166,12 @@ const CreateChannel = styled.button`
   &:hover {
     background-color: #c0c0c0;
   }
+`
+
+const ToggleWrapper = styled.div`
+  width: 45px;
+  display: flex;
+  align-items: center;
 `
 
 export default ChannelSidebar
