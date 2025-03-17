@@ -7,33 +7,43 @@ import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons"
 
 const CreateChannelModal = memo(function CreateChannelModal({ setOpen, open, server }: { setOpen: React.Dispatch<React.SetStateAction<boolean>>, open: boolean, server: Server }) {
   ReactModal.setAppElement("#root")
-  const [errors, setErrors] = useState<string[]>([])
+  const [error, setError] = useState("")
   const [channelName, setChannelName] = useState("")
 
   const handleChannelSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setErrors([])
-    try {
-      await createChannel(channelName, server.id)
-      setOpen(false)
-      setChannelName("")
-    } catch (error: any) {
-      setErrors(error.errors)
+    if (error) setError("")
+
+    if (!channelName) {
+      setError("Please enter a channel name")
+    } else if (channelName.length < 3) {
+      setError("Name too short")
+    } else if (channelName.length < 50) {
+      setError("Name too long")
+    } else {
+      try {
+        await createChannel(channelName, server.id)
+        setOpen(false)
+        setChannelName("")
+      } catch (error: any) {
+        setError(error.errors[0]) // Most likely to be "name can't be blank" or similar
+      }
     }
   }
 
   const handleClose = () => {
     setOpen(false)
     setChannelName("")
-    setErrors([])
+    setError("")
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError("")
     setChannelName(e.target.value)
   }
 
   return (
-    <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }}>
+    <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} onRequestClose={() => setOpen(false)}>
       <CloseButton onClick={handleClose}>
         <FontAwesomeIcon icon={faXmarkCircle} />
       </CloseButton>
@@ -42,7 +52,7 @@ const CreateChannelModal = memo(function CreateChannelModal({ setOpen, open, ser
         <ChannelInput type="text" placeholder="Channel name" name="channel" value={channelName} onChange={handleInputChange} />
         <input type="submit" value="Create" id="newchannelsubmit" hidden/>
       </ChannelForm>
-      <p>{errors.join(", ")}</p>
+      {error && <p>{error}</p>}
       <CreateButton role="button" tabIndex={0} htmlFor="newchannelsubmit">Create</CreateButton>
     </Modal>
   )
