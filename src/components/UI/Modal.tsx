@@ -55,6 +55,7 @@ const Modal = forwardRef<Ref, React.PropsWithChildren<ModalProps>>(({ children, 
 })
 
 const ModalWrapper = styled(ReactModal)<{ $height?: string, $width?: string }>`
+  outline: 0;
   position: relative;
   display: flex;
   flex-direction: column;
