@@ -12,7 +12,9 @@ interface Ref {
 
 interface ModalProps {
   open?: boolean,
-  setOpen?: React.Dispatch<React.SetStateAction<boolean>>
+  setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
+  height?: string,
+  width?: string
 }
 
 // ? Should I keep the ref, it's a reasonable performance hit with enough of them.
@@ -45,7 +47,7 @@ const Modal = forwardRef<Ref, React.PropsWithChildren<ModalProps>>(({ children, 
   }
 
   return (
-    <ModalWrapper isOpen={props.open || open} onRequestClose={closeHandler} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} {...props}>
+    <ModalWrapper isOpen={props.open || open} onRequestClose={closeHandler} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} $height={props.height} $width={props.width}>
       <CloseButton onClick={closeHandler}>
         <FontAwesomeIcon icon={faXmarkCircle} />
       </CloseButton>

@@ -36,7 +36,7 @@ const CreateChannelModal = memo(function CreateChannelModal({ setOpen, open, ser
   }
 
   return (
-    <Modal open={open} setOpen={setOpen}>
+    <Modal open={open} setOpen={setOpen} height={"25%"} width={"25%"}>
       <h2>Create a new channel</h2>
       <ChannelForm onSubmit={handleChannelSubmit}>
         <ChannelInput type="text" placeholder="Channel name" name="channel" value={channelName} onChange={handleInputChange} />
