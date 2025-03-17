@@ -36,16 +36,32 @@ const ChannelContextMenu = ({ position, close, channel, server }: ContextMenuPro
 }
 
 const Menu = styled.div<{ $position: { x: number, y: number } }>`
-  background-color: red;
+  background-color: #272727;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
   z-index: 1;
   position: absolute;
+  border-radius: 10px;
   width: 10rem;
   top: ${ props => props.$position.y - 60 }px; // Not sure why this is off by so much?
   left: ${ props => props.$position.x + 10 }px;
 `
 
 const MenuButton = styled.button`
+  background-color: #4b4b4b;
+  color: white;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 4px;
+  transition: 0.3s;
 
+  &:hover {
+    background-color: #777;
+  }
 `
 
 export default ChannelContextMenu;
