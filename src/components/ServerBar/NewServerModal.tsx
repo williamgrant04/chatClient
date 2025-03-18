@@ -1,18 +1,18 @@
-import ReactModal from "react-modal"
 import { newServer } from "../../utils/ChatAPI"
 import styled from "styled-components"
-import { forwardRef, useImperativeHandle, useRef, useState } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faXmarkCircle } from "@fortawesome/free-regular-svg-icons"
+import { forwardRef, useImperativeHandle, useState } from "react"
+import Loader from "../UI/Loader"
+import Modal from "../UI/Modal"
+import { encodeFile } from "../../utils/encodeFile"
 
 const NewServerModal = forwardRef<{ open: () => void }>(
   function NewServerModal(_props, ref) {
-    ReactModal.setAppElement("#root")
     const [open, setOpen] = useState(false)
-    const modalRef = useRef<ReactModal>(null)
     const [serverName, setServerName] = useState("")
     const [image, setImage] = useState<File>()
+    const [encodedImage, setEncodedImage] = useState("")
     const [error, setError] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
 
     useImperativeHandle(ref, () => {
       return {
@@ -37,81 +37,91 @@ const NewServerModal = forwardRef<{ open: () => void }>(
         setError("Please provide an image")
       } else {
         try {
+          setIsLoading(true)
           await newServer(serverName.trim(), image)
           setOpen(false)
-          setServerName("")
+          setIsLoading(false)
+          resetFields()
         } catch (error: any) {
           setError(error.errors[0])
         }
       }
     }
 
-    const handleClose = () => {
-      setOpen(false)
+    const resetFields = () => {
       setServerName("")
       setError("")
+      setEncodedImage("")
+      setImage(undefined)
     }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files) {
         setImage(e.target.files[0])
+        setEncodedImage(await encodeFile(e.target.files[0]))
       } else {
         setServerName(e.target.value)
       }
     }
 
     return (
-      <Modal isOpen={open} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} ref={modalRef} onRequestClose={handleClose}>
-        <CloseButton onClick={handleClose}>
-          <FontAwesomeIcon icon={faXmarkCircle} />
-        </CloseButton>
-        <h2>Create a new server</h2>
+      <Modal open={open} setOpen={setOpen} onBeforeClose={resetFields}>
+        <Header>
+          <h1>Create a new server</h1>
+          <h3>Give your server a name and an icon, you can change it later, so no pressure.</h3>
+        </Header>
+
         <ServerForm onSubmit={handleServerSubmit}>
-          <ServerInput type="text" placeholder="Server name" name="server" value={serverName} onChange={handleInputChange} />
-          <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png"/>
-          <input type="submit" value="Create" id="newserversubmit" hidden/>
+          <label htmlFor="server-name" hidden>Server name</label>
+          <ServerName type="text" placeholder="Server name" name="server" id="server-name" value={serverName} onChange={handleInputChange} />
+          <ServerIcon>
+            { encodedImage ? <IconPreview src={encodedImage} alt="Server icon" /> : "Add Icon" }
+            <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png" hidden/>
+          </ServerIcon>
+          { error && <p>{error}</p> }
+          <CreateButton>
+            { isLoading ? (
+              <Loader borderSize={4}/>
+            ):(
+              "Create"
+            )}
+          </CreateButton>
         </ServerForm>
-        <p>{error}</p>
-        <CreateButton role="button" tabIndex={0} htmlFor="newserversubmit">Create</CreateButton>
       </Modal>
     )
   }
 )
-
-const Modal = styled(ReactModal)`
-  outline: 0;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  width: 400px;
-  height: 200px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-
-  h2 {
-    margin: 0;
-    margin-bottom: 10px;
-  }
-`
 
 const ServerForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   width: 100%;
+
+  p { margin: 0 }
 `
 
-const ServerInput = styled.input`
-  padding: 5px 10px;
+const Header = styled.header`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h1, h3 { margin: 5px 0; }
+
+  h3 {
+    width: 60%;
+    text-align: center;
+  }
+`
+
+const ServerName = styled.input`
+  height: 1.6rem;
+  width: 40%;
+  font-size: 1.1rem;
+  padding: 10px 20px;
   border-radius: 10px;
   border: none;
   outline: 0;
@@ -124,46 +134,52 @@ const ServerInput = styled.input`
   }
 `
 
-const CreateButton = styled.label`
+const ServerIcon = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
   padding: 5px 10px;
+  border-radius: 10px;
+  border: none;
+  outline: 0;
+  background-color: #f0f0f0;
+  transition: 0.3s;
+  cursor: pointer;
+
+  &:hover {
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    transform: scale(1.1);
+  }
+`
+
+const IconPreview = styled.img`
+  height: 75px;
+  width: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+`
+
+const CreateButton = styled.button`
+  height: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  padding: 5px 10px;
+  width: 6em;
   background-color: black;
   color: white;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
+  border: none;
 
   &:hover {
     background-color: #909090;
     color: black;
     border-radius: 5px;
     transform: scale(1.1);
-  }
-`
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  height: 30px;
-  width: 30px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.6rem;
-  color: #000;
-  transition: 0.3s;
-  padding: 0;
-  border-radius: 50%;
-
-  svg {
-    height: 30px;
-    width: 30px;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    background-color: #f0f0f0;
-    color: #909090;
   }
 `
 
