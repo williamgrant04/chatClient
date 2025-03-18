@@ -3,7 +3,7 @@ import ChannelButton from "./ChannelButton"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus } from "@fortawesome/free-solid-svg-icons/faPlus"
 import { useContext, useEffect, useState } from "react"
-import CreateChannelModal from "./CreateChannelModal"
+import NewChannelModal from "./NewChannelModal"
 import userContext from "../../context/UserContext"
 import { createConsumer } from "@rails/actioncable"
 import { useParams } from "@tanstack/react-router"
@@ -53,7 +53,7 @@ const ChannelSidebar = ({ server, ...props }: { channels: Channel[], server: Ser
           <ToggleSwitch onToggle={sidebarToggleHandler} toggled={permanent}/>
         </ToggleWrapper>
       </ServerDetails>
-      <CreateChannelModal open={open} setOpen={setOpen} server={server}/>
+      <NewChannelModal open={open} setOpen={setOpen} server={server}/>
       <ChannelList>
         {
           user?.id === server.owner.id &&
