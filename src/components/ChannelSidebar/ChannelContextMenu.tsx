@@ -58,6 +58,7 @@ const MenuButton = styled.button`
   font-size: 1rem;
   padding: 4px;
   transition: 0.3s;
+  cursor: pointer;
 
   &:hover {
     background-color: #777;
