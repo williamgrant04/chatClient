@@ -14,7 +14,8 @@ interface ModalProps {
   open?: boolean,
   setOpen?: React.Dispatch<React.SetStateAction<boolean>>,
   height?: string,
-  width?: string
+  width?: string,
+  onBeforeClose?: () => void
 }
 
 // ? Should I keep the ref, it's a reasonable performance hit with enough of them.
@@ -39,6 +40,7 @@ const Modal = forwardRef<Ref, React.PropsWithChildren<ModalProps>>(({ children, 
   })
 
   const closeHandler = () => {
+    if (props.onBeforeClose) props.onBeforeClose()
     if (props.setOpen) {
       props.setOpen(false)
     } else {
