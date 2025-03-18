@@ -33,6 +33,8 @@ const ChannelLink = styled(Link)`
   text-decoration: none;
   font-size: 1.1rem;
   transition: 0.2s;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   &.active {
     background-color: #606060;
