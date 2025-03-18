@@ -60,6 +60,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
         setImage(e.target.files[0])
         setEncodedImage(await encodeFile(e.target.files[0]))
       } else {
+        if (e.target.value.length > 50) return
         setServerName(e.target.value)
       }
     }

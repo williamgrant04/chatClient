@@ -41,6 +41,7 @@ const CreateChannelModal = memo(function CreateChannelModal({ setOpen, open, ser
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError("")
+    if (e.target.value.length > 50) return
     setChannelName(e.target.value)
   }
 
