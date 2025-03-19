@@ -8,18 +8,18 @@ import cloudinaryContext from "../../context/CloudinaryContext"
 const ServerIcon = ({ server }: { server: Server }) => {
   const [show, setShow] = useState(false)
   const { cloud } = useContext(cloudinaryContext)
-  const { serverId } = useParams({ from: "/_auth/server/$serverId" })
+  const params = useParams({ from: "/_auth/server/$serverId", shouldThrow: false })
 
   return (
     <>
       {
-        `${server.id}` === serverId ? (
+        `${server.id}` === params?.serverId ? (
           <ActiveServer onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
             <Icon cldImg={cloud.image(server.image)} />
             <ServerHover server={server} show={show}/>
           </ActiveServer>
         ) : (
-          <IconLink to={`/server/${server.id}/${server.defaultChannel.id}`} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} $active={`${server.id}` === serverId}>
+          <IconLink to={`/server/${server.id}/${server.defaultChannel.id}`} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} $active={`${server.id}` === params?.serverId}>
             <Icon cldImg={cloud.image(server.image)} />
             <ServerHover server={server} show={show}/>
           </IconLink>
