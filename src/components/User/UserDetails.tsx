@@ -16,8 +16,11 @@ const UserDetails = () => {
   return (
     <>
       <Wrapper onClick={() => { setDropdownOpen(!dropdownOpen) }} ref={dropDownRef}>
-        <AdvancedImage cldImg={cloud.image(user?.image)}  />
-        <p>{user?.username}</p>
+        <AdvancedImage cldImg={cloud.image(user?.image)} />
+        <TextWrapper>
+          <p>{user?.username}</p>
+          <Status>{user?.status}</Status>
+        </TextWrapper>
       </Wrapper>
       <UserDropDown open={dropdownOpen}/>
     </>
@@ -34,6 +37,7 @@ const Wrapper = styled.div`
   align-items: center;
   gap: 10px;
   transition: 0.3s;
+  max-width: 10rem;
 
   &:hover {
     cursor: pointer;
@@ -45,10 +49,22 @@ const Wrapper = styled.div`
 
   img {
     height: 40px;
-    width: 40px;
+    min-width: 40px;
     object-fit: cover;
     border-radius: 50%;
   }
+`
+
+const TextWrapper = styled.div`
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`
+
+const Status = styled.p`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8rem;
 `
 
 export default UserDetails
