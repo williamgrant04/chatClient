@@ -10,23 +10,15 @@ const ServerIcon = ({ server }: { server: Server }) => {
   const { cloud } = useContext(cloudinaryContext)
 
   return (
-    <Wrapper onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
-      <IconLink to={`/server/${server.id}/${server.defaultChannel.id}`}>
-        {/* TODO: implement actual server icons instead of placeholders */}
-        <Icon cldImg={cloud.image(server.image)} />
-      </IconLink>
+    <IconLink to={`/server/${server.id}/${server.defaultChannel.id}`} onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      <Icon cldImg={cloud.image(server.image)} />
       <ServerHover server={server} show={show}/>
-    </Wrapper>
+    </IconLink>
   )
 }
 
-const Wrapper = styled.div`
-  position: relative;
-  height: 50px;
-  width: 50px;
-`
-
 const IconLink = styled(Link)`
+  position: relative;
   display: block;
   height: 50px;
   width: 50px;

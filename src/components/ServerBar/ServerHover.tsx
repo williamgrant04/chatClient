@@ -12,6 +12,7 @@ const ServerHover = ({ server, show }: {server: Server, show: boolean}) => {
 
 const Hover = styled.div<{ $show: boolean }>`
   display: ${({ $show }) => $show ? "flex" : "none"};
+  color: black;
   flex-direction: column;
   align-items: center;
   position: absolute;
