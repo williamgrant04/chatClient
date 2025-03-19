@@ -1,4 +1,4 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import userContext from "../../context/UserContext";
 import { useNavigate } from "@tanstack/react-router";
 import { login, signup } from "../../utils/ChatAPI";
@@ -12,6 +12,10 @@ const Form = ({ loginForm }: { loginForm: boolean }) => {
   const [errors, setErrors] = useState<UserError[]>([])
   const [image, setImage] = useState<File>()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    setErrors([])
+  }, [loginForm])
 
   const credentialsValid = (credentials: { username?: string, email: string, password: string }) => {
     let valid = true
@@ -46,7 +50,7 @@ const Form = ({ loginForm }: { loginForm: boolean }) => {
       setErrors(prevErrors => [ ...prevErrors, { type: "password", message: "Password too long" } ])
     }
 
-    if (!image) {
+    if (!image && !loginForm) {
       valid = false
       setErrors(prevErrors => [ ...prevErrors, { type: "image", message: "Please provide an image" } ])
     }
