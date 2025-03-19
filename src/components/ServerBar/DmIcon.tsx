@@ -25,8 +25,8 @@ const Icon = styled.img`
   transition: 0.2s;
 
   &:hover {
-    transform: scale(1.06); // Subtle effect, 1.1 would be too much
-    border-radius: 5px;
+    transform: scale(1.06);
+    border-radius: 25%;
   }
 `
 
