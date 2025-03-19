@@ -2,24 +2,30 @@ import { useNavigate } from "@tanstack/react-router"
 import { logout } from "../../utils/ChatAPI"
 import styled from "styled-components"
 import { useClickOutside } from "../../hooks/useClickOutside"
-import { useRef } from "react"
+import { useRef, useState } from "react"
+import StatusModal from "./StatusModal"
 
 const UserDropDown = ({ open, setOpen }: { open: boolean, setOpen: any }) => {
   const navigate = useNavigate()
   const dropDownRef = useRef<HTMLDivElement>(null)
   useClickOutside(dropDownRef, () => setOpen(false))
+  const [statusOpen, setStatusOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
     navigate({ to: '/' })
   }
 
+  // TODO: Fix issue relating to layout when dropdown closes while modal is open
   return (
-    <Dropdown open={open} ref={dropDownRef}>
-      <DropdownButton>!Edit status!</DropdownButton>
-      <DropdownButton>!Settings!</DropdownButton>
-      <DropdownButton onClick={handleLogout}>Log out</DropdownButton>
-    </Dropdown>
+    <>
+      <Dropdown open={open} ref={dropDownRef}>
+        <DropdownButton onClick={() => setStatusOpen(true)}>Edit status</DropdownButton>
+        <DropdownButton>!Settings!</DropdownButton>
+        <DropdownButton onClick={handleLogout}>Log out</DropdownButton>
+      </Dropdown>
+      <StatusModal open={statusOpen} setOpen={setStatusOpen}/>
+    </>
   )
 }
 

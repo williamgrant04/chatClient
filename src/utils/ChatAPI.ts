@@ -70,6 +70,26 @@ export const loggedin = async (): Promise<{ logged_in: boolean, user?: User }> =
   }
 }
 
+//* USER MISC
+export const newStatus = async (status: string): Promise<string> => {
+  try {
+    const response = await axios.patch(`${baseUrl}/signup`, {
+      user: {
+        status: status === "" ? null : status
+      }
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+
+    console.log(response)
+    return response.data
+  } catch (error: any) {
+    throw error
+  }
+}
+
 //* SERVERS
 export const getServers = async (): Promise<Server[]> => {
   try {
