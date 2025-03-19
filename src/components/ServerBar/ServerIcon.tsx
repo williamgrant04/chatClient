@@ -35,7 +35,7 @@ const IconLink = styled(Link)`
 const Icon = styled(AdvancedImage)`
   height: 50px;
   width: 50px;
-  border-radius: 10px;
+  border-radius: 50%;
   cursor: pointer;
   object-fit: cover;
   transition: 0.2s;

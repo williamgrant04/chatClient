@@ -27,7 +27,7 @@ const Wrapper = styled.div`
   height: 50px;
   width: 50px;
   background-color: #ddd;
-  border-radius: 10px;
+  border-radius: 50%;
   cursor: pointer;
   transition: 0.2s;
   display: flex;

@@ -20,7 +20,7 @@ const IconLink = styled(Link)`
 const Icon = styled.img`
   height: 50px;
   width: 50px;
-  border-radius: 10px;
+  border-radius: 50%;
   cursor: pointer;
   transition: 0.2s;
 
