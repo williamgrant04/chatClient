@@ -1,8 +1,8 @@
 import { createContext, useState } from "react";
 
-const userContext = createContext({
-  user: {} as User | undefined,
-  setUser: (_user: User | undefined): void => {},
+const userContext = createContext<{ user?: User, setUser: React.Dispatch<React.SetStateAction<User | undefined>> }>({
+  user: {} as User,
+  setUser: () => {},
 })
 
 export const UserContextProvider = ({ children }: { children: React.JSX.Element }) => {
