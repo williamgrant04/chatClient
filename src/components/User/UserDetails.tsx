@@ -1,28 +1,25 @@
-import { useContext, useRef, useState } from "react"
+import { useContext, useState } from "react"
 import userContext from "../../context/UserContext"
 import UserDropDown from "./UserDropdown"
 import styled from "styled-components"
 import { AdvancedImage } from '@cloudinary/react'
 import cloudinaryContext from "../../context/CloudinaryContext"
-import { useClickOutside } from "../../hooks/useClickOutside"
 
 const UserDetails = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const { user } = useContext(userContext)
   const { cloud } = useContext(cloudinaryContext)
-  const dropDownRef = useRef<HTMLDivElement>(null)
-  useClickOutside(dropDownRef, () => setDropdownOpen(false))
 
   return (
     <>
-      <Wrapper onClick={() => { setDropdownOpen(!dropdownOpen) }} ref={dropDownRef}>
+      <Wrapper onClick={() => { setDropdownOpen(prevDropdown => !prevDropdown) }}>
         <AdvancedImage cldImg={cloud.image(user?.image)} />
         <TextWrapper>
           <p>{user?.username}</p>
           <Status>{user?.status}</Status>
         </TextWrapper>
       </Wrapper>
-      <UserDropDown open={dropdownOpen}/>
+      <UserDropDown open={dropdownOpen} setOpen={setDropdownOpen}/>
     </>
   )
 }
