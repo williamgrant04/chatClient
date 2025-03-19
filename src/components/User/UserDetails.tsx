@@ -50,6 +50,7 @@ const Wrapper = styled.div`
   img {
     height: 40px;
     min-width: 40px;
+    max-width: 40px;
     object-fit: cover;
     border-radius: 50%;
   }
