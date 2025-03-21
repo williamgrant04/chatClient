@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { useClickOutside } from "../../hooks/useClickOutside"
 import { useRef, useState } from "react"
 import StatusModal from "./StatusModal"
+import { AnimatePresence, motion } from "motion/react"
 
 const UserDropDown = ({ open, setOpen }: { open: boolean, setOpen: any }) => {
   const navigate = useNavigate()
@@ -16,14 +17,18 @@ const UserDropDown = ({ open, setOpen }: { open: boolean, setOpen: any }) => {
     navigate({ to: '/' })
   }
 
-  // TODO: Fix issue relating to layout when dropdown closes while modal is open
   return (
     <>
-      <Dropdown open={open} ref={dropDownRef}>
-        <DropdownButton onClick={() => setStatusOpen(true)}>Edit status</DropdownButton>
-        <DropdownButton>!Settings!</DropdownButton>
-        <DropdownButton onClick={handleLogout}>Log out</DropdownButton>
-      </Dropdown>
+      <AnimatePresence>
+        {
+          open &&
+          <Dropdown open={open} ref={dropDownRef} as={motion.div} animate={{ right: "0" }} exit={{ right: "-200px" }}>
+            <DropdownButton onClick={() => setStatusOpen(true)}>Edit status</DropdownButton>
+            <DropdownButton>!Settings!</DropdownButton>
+            <DropdownButton onClick={handleLogout}>Log out</DropdownButton>
+          </Dropdown>
+        }
+      </AnimatePresence>
       <StatusModal open={statusOpen} setOpen={setStatusOpen}/>
     </>
   )
@@ -33,7 +38,7 @@ const Dropdown = styled.div<{ open: boolean }>`
   display: flex;
   position: absolute;
   top: 100%;
-  right: ${props => props.open ? "0" : "-200px"};
+  right: -200px;
   box-shadow: 0px 0px 4px #a0a0a0;
   background-color: #ddd;
   width: 120px;
