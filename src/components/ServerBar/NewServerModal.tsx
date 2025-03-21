@@ -1,4 +1,4 @@
-import { newServer } from "../../utils/ChatAPI"
+import { inviteUser, newServer } from "../../utils/ChatAPI"
 import styled from "styled-components"
 import { forwardRef, useImperativeHandle, useState } from "react"
 import Loader from "../UI/Loader"
@@ -13,6 +13,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     const [encodedImage, setEncodedImage] = useState("")
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [inviteCode, setInviteCode] = useState("")
 
     useImperativeHandle(ref, () => {
       return {
@@ -67,27 +68,38 @@ const NewServerModal = forwardRef<{ open: () => void }>(
 
     return (
       <Modal open={open} setOpen={setOpen} onBeforeClose={resetFields}>
-        <Header>
-          <h1>Create a new server</h1>
-          <h3>Give your server a name and an icon, you can change it later, so no pressure.</h3>
-        </Header>
+        <div>
+          <Header>
+            <h1>Create a new server</h1>
+            <h3>Give your server a name and an icon, you can change it later, so no pressure.</h3>
+          </Header>
 
-        <ServerForm onSubmit={handleServerSubmit}>
-          <label htmlFor="server-name" hidden>Server name</label>
-          <ServerName type="text" placeholder="Server name" name="server" id="server-name" value={serverName} onChange={handleInputChange} />
-          <ServerIcon>
-            { encodedImage ? <IconPreview src={encodedImage} alt="Server icon" /> : "Add Icon" }
-            <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png" hidden/>
-          </ServerIcon>
-          { error && <p>{error}</p> }
-          <CreateButton>
-            { isLoading ? (
-              <Loader borderSize={4}/>
-            ):(
-              "Create"
-            )}
-          </CreateButton>
-        </ServerForm>
+          <ServerForm onSubmit={handleServerSubmit}>
+            <label htmlFor="server-name" hidden>Server name</label>
+            <ServerName type="text" placeholder="Server name" name="server" id="server-name" value={serverName} onChange={handleInputChange} />
+            <ServerIcon>
+              { encodedImage ? <IconPreview src={encodedImage} alt="Server icon" /> : "Add Icon" }
+              <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png" hidden/>
+            </ServerIcon>
+            { error && <p>{error}</p> }
+            <CreateButton>
+              { isLoading ? (
+                <Loader borderSize={4}/>
+              ):(
+                "Create"
+              )}
+            </CreateButton>
+          </ServerForm>
+        </div>
+
+        <div>
+          <h1>Or</h1>
+          <h3>Have a join code?</h3>
+          <form onSubmit={() => inviteUser(inviteCode)}>
+            <input type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} />
+            <button>Join</button>
+          </form>
+        </div>
       </Modal>
     )
   }

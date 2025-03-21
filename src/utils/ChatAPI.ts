@@ -144,6 +144,21 @@ export const newServer = async (name: string, image: File): Promise<Server | {er
   }
 }
 
+export const inviteUser = async (serverId: string) => {
+  try {
+    const response = await axios.post(`${baseUrl}/invite/${serverId}`, { }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+
+    console.log(response)
+    return response.data
+  } catch (error: any) {
+    throw error.response.data
+  }
+}
+
 //* CHANNELS
 export const getChannels = async (serverId: string): Promise<Channel[]> => {
   try {
