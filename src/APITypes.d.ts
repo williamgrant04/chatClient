@@ -34,7 +34,7 @@ interface Server {
 interface Message {
   id: number,
   content: string,
-  created_at: string,
-  updated_at: string,
+  timestamp: number,
+  edit_timestamp: number,
   author: User
 }

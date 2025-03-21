@@ -13,10 +13,14 @@ const Message = ({ message }: { message: Message }) => {
   const { user } = useContext(userContext)
   const { cloud } = useContext(cloudinaryContext)
   const [isEditing, setIsEditing] = useState(false)
-  const [content, setContent] = useState(message.content)
+  const [content, setContent] = useState("")
   const [hovering, setHovering] = useState(false)
   const editRef = useRef<HTMLDivElement>(null)
-  const date = new Date(message.created_at)
+  const date = new Date(message.timestamp * 1000)
+
+  useEffect(() => {
+    setContent(message.content)
+  }, [message.content])
 
   useEffect(() => {
     editRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -33,14 +37,11 @@ const Message = ({ message }: { message: Message }) => {
     if (!content) return
     try {
       await editMessage(content, message.id)
+      setContent(content)
+      setIsEditing(false)
     } catch (err: any) {
       // The error will be because the message content is empty, so I don't want to close the edit box
     }
-  }
-
-  const editSuccessHandler = (content: string) => {
-    setContent(content)
-    setIsEditing(false)
   }
 
   return (
@@ -51,7 +52,7 @@ const Message = ({ message }: { message: Message }) => {
           <h3>{message.author.username}</h3>
           <p>{date.toDateString()}</p>
         </MessageDetails>
-        {isEditing ? <EditMessage onEdit={editHandler} onEditSuccess={editSuccessHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
+        {isEditing ? <EditMessage onEdit={editHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
         {message.author.id === user?.id && !isEditing && // Only show actions if the user is the author
           <MessageActions $hovering={hovering}>
             <MessageAction onClick={() => setIsEditing(true)} icon={faPen} />
