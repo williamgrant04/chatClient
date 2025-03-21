@@ -10,12 +10,9 @@ const UserDetails = () => {
   const { user } = useContext(userContext)
   const { cloud } = useContext(cloudinaryContext)
 
-  // TODO: Fix dropdown closing then immediately opening again when clicking on wrapper while it's open
-  // This is due to useClickOutside recognising that an element other than the dropdown has been clicked, so it closes it
-  // but the wrapper just opens it again because of the click listener
   return (
     <>
-      <Wrapper onClick={() => { setDropdownOpen(prevDropdown => !prevDropdown) }}>
+      <Wrapper onClick={() => { setDropdownOpen(prevDropdown => !prevDropdown) }} id="dropdownWrapper">
         <AdvancedImage cldImg={cloud.image(user?.image)} />
         <TextWrapper>
           <p>{user?.username}</p>
@@ -38,9 +35,9 @@ const Wrapper = styled.div`
   gap: 10px;
   transition: 0.3s;
   max-width: 10rem;
+  cursor: pointer;
 
   &:hover {
-    cursor: pointer;
     transform: scale(1.05);
     border-radius: 5px;
   }

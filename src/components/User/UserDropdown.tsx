@@ -17,13 +17,18 @@ const UserDropDown = ({ open, setOpen }: { open: boolean, setOpen: any }) => {
     navigate({ to: '/' })
   }
 
+  const statusEditClickHandler = () => {
+    setStatusOpen(true)
+    setOpen(false)
+  }
+
   return (
     <>
       <AnimatePresence>
         {
           open &&
-          <Dropdown open={open} ref={dropDownRef} as={motion.div} animate={{ right: "0" }} exit={{ right: "-200px" }}>
-            <DropdownButton onClick={() => setStatusOpen(true)}>Edit status</DropdownButton>
+          <Dropdown open={open} ref={dropDownRef} as={motion.div} animate={{ right: "0" }} exit={{ right: "-200px" }} transition={{ duration: .2 }}>
+            <DropdownButton onClick={statusEditClickHandler}>Edit status</DropdownButton>
             <DropdownButton>!Settings!</DropdownButton>
             <DropdownButton onClick={handleLogout}>Log out</DropdownButton>
           </Dropdown>
