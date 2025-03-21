@@ -3,7 +3,7 @@ import { RefObject, useEffect } from "react"
 export const useClickOutside = <T extends HTMLElement>(ref: RefObject<T>, handler: (e: MouseEvent | TouchEvent) => void) => {
   useEffect(() => {
     const listener = (e: MouseEvent | TouchEvent) => {
-      if (!ref?.current || ref?.current.contains(e.target as Node) || (e.target as HTMLElement)?.id === "dropdownWrapper") return // I could not come up with a better solution
+      if (!ref?.current || ref?.current.contains(e.target as Node) || ((e.target as HTMLElement)?.id === "dropdownWrapper" || (e.target as HTMLElement).contains(e.target as Node))) return // I could not come up with a better solution
       handler(e)
     }
 
