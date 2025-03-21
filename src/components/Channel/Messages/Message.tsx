@@ -16,7 +16,7 @@ const Message = ({ message }: { message: Message }) => {
   const [content, setContent] = useState("")
   const [hovering, setHovering] = useState(false)
   const [edited, setEdited] = useState(false) // If the message has been edited
-  const editRef = useRef<HTMLDivElement>(null)
+  const editRef = useRef<HTMLFormElement>(null)
   const createdDate = new Date(message.timestamp * 1000)
   const editDate = new Date(message.edit_timestamp * 1000)
 
@@ -28,12 +28,15 @@ const Message = ({ message }: { message: Message }) => {
   useEffect(() => {
     editRef.current?.scrollIntoView({ behavior: "smooth" })
 
-    if (isEditing) document.addEventListener("keydown", function cancel(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        setIsEditing(false)
-        document.removeEventListener("keydown", cancel)
-      }
-    })
+    if (isEditing) {
+      (editRef.current?.children[0] as HTMLInputElement).focus() // Want to prevent needing another ref
+      document.addEventListener("keydown", function cancel(e: KeyboardEvent) {
+        if (e.key === "Escape") {
+          setIsEditing(false)
+          document.removeEventListener("keydown", cancel)
+        }
+      })
+    }
   }, [isEditing])
 
   const editHandler = async (content: string) => {

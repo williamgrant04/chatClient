@@ -10,11 +10,17 @@ interface EditMessageProps {
   message: Message
 }
 
-const EditMessage = forwardRef<HTMLDivElement, EditMessageProps>(function EditMessage({ onEdit, onCancel, message }, ref){
+const EditMessage = forwardRef<HTMLFormElement, EditMessageProps>(function EditMessage({ onEdit, onCancel, message }, ref){
   const [content, setContent] = useState(message.content)
 
+  // This is just so that pressing enter also submits the edit
+  const editSubmitHandler = (e: React.FormEvent) => {
+    e.preventDefault()
+    onEdit(content)
+  }
+
   return (
-    <MessageEdit ref={ref}>
+    <MessageEdit ref={ref} onSubmit={editSubmitHandler}>
       <MessageInput type="text" value={content} onChange={ (e) => setContent(e.target.value) } />
       <MessageActions>
         <MessageAction onClick={() => onEdit(content)} icon={faCheck} />
@@ -24,7 +30,7 @@ const EditMessage = forwardRef<HTMLDivElement, EditMessageProps>(function EditMe
   )
 })
 
-const MessageEdit = styled.div`
+const MessageEdit = styled.form`
   position: relative;
   display: flex;
   align-items: center;
