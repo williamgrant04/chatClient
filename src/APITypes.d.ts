@@ -36,5 +36,6 @@ interface Message {
   content: string,
   timestamp: number,
   edit_timestamp: number,
+  edited: boolean
   author: User
 }

@@ -34,9 +34,7 @@ const Messages = (props: { messages: Message[] }) => {
     } else if (data.edit && !data.destroy) {
       setMessages(prevMessages => {
         const messages = [ ...prevMessages ]
-        const message = {...messages.find((message) => message.id === data.message.id)} as Message
-        message.content = data.message.content
-        const newMessages = [ ...messages.filter((message) => message.id !== data.message.id), message ].sort(sortMessages)
+        const newMessages = [ ...messages.filter((message) => message.id !== data.message.id), data.message ].sort(sortMessages)
         return newMessages
       })
     } else if (data.destroy) {

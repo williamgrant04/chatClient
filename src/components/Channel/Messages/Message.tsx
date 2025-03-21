@@ -12,15 +12,18 @@ import MessageAction from "./MessageAction"
 const Message = ({ message }: { message: Message }) => {
   const { user } = useContext(userContext)
   const { cloud } = useContext(cloudinaryContext)
-  const [isEditing, setIsEditing] = useState(false)
+  const [isEditing, setIsEditing] = useState(false) // If the message is currently being edited
   const [content, setContent] = useState("")
   const [hovering, setHovering] = useState(false)
+  const [edited, setEdited] = useState(false) // If the message has been edited
   const editRef = useRef<HTMLDivElement>(null)
-  const date = new Date(message.timestamp * 1000)
+  const createdDate = new Date(message.timestamp * 1000)
+  const editDate = new Date(message.edit_timestamp * 1000)
 
   useEffect(() => {
     setContent(message.content)
-  }, [message.content])
+    setEdited(message.edited)
+  }, [message])
 
   useEffect(() => {
     editRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -50,7 +53,8 @@ const Message = ({ message }: { message: Message }) => {
       <MessageContent>
         <MessageDetails>
           <h3>{message.author.username}</h3>
-          <p>{date.toDateString()}</p>
+          <p>{createdDate.toDateString()}</p>
+          { edited && <p>Edited: {editDate.toDateString()}</p> }
         </MessageDetails>
         {isEditing ? <EditMessage onEdit={editHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
         {message.author.id === user?.id && !isEditing && // Only show actions if the user is the author
