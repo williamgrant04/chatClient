@@ -8,6 +8,7 @@ import { AdvancedImage } from "@cloudinary/react"
 import cloudinaryContext from "../../../context/CloudinaryContext"
 import EditMessage from "./EditMessage"
 import MessageAction from "./MessageAction"
+import { formatDate } from "../../../utils/dateFormatter"
 
 const Message = ({ message }: { message: Message }) => {
   const { user } = useContext(userContext)
@@ -17,8 +18,6 @@ const Message = ({ message }: { message: Message }) => {
   const [hovering, setHovering] = useState(false)
   const [edited, setEdited] = useState(false) // If the message has been edited
   const editRef = useRef<HTMLFormElement>(null)
-  const createdDate = new Date(message.timestamp * 1000)
-  const editDate = new Date(message.edit_timestamp * 1000)
 
   useEffect(() => {
     setContent(message.content)
@@ -56,8 +55,8 @@ const Message = ({ message }: { message: Message }) => {
       <MessageContent>
         <MessageDetails>
           <h3>{message.author.username}</h3>
-          <p>{createdDate.toDateString()}</p>
-          { edited && <p>Edited: {editDate.toDateString()}</p> }
+          <p>{formatDate(message.timestamp)}</p>
+          { edited && <p>Edited: {formatDate(message.edit_timestamp)}</p> }
         </MessageDetails>
         {isEditing ? <EditMessage onEdit={editHandler} onCancel={() => setIsEditing(false)} {...{message}} ref={editRef}/> : <p>{content}</p>}
         {message.author.id === user?.id && !isEditing && // Only show actions if the user is the author
