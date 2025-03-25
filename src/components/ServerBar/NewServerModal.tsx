@@ -14,6 +14,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
     const [error, setError] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [inviteCode, setInviteCode] = useState("")
+    const [inviteLoading, setInviteLoading] = useState(false)
 
     useImperativeHandle(ref, () => {
       return {
@@ -53,6 +54,7 @@ const NewServerModal = forwardRef<{ open: () => void }>(
       setServerName("")
       setError("")
       setEncodedImage("")
+      setInviteCode("")
       setImage(undefined)
     }
 
@@ -66,46 +68,73 @@ const NewServerModal = forwardRef<{ open: () => void }>(
       }
     }
 
+    const inviteSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      setInviteLoading(true)
+      try {
+        await inviteUser(inviteCode)
+      } catch (err) {
+
+      }
+      setInviteLoading(false)
+    }
+
     return (
-      <Modal open={open} setOpen={setOpen} onBeforeClose={resetFields}>
-        <div>
+      <RowModal open={open} setOpen={setOpen} onBeforeClose={resetFields}>
+        <ContentWrapper>
           <Header>
             <h1>Create a new server</h1>
             <h3>Give your server a name and an icon, you can change it later, so no pressure.</h3>
           </Header>
 
-          <ServerForm onSubmit={handleServerSubmit}>
+          <Form onSubmit={handleServerSubmit}>
             <label htmlFor="server-name" hidden>Server name</label>
-            <ServerName type="text" placeholder="Server name" name="server" id="server-name" value={serverName} onChange={handleInputChange} />
+            <TextInput type="text" placeholder="Server name..." name="server" id="server-name" value={serverName} onChange={handleInputChange} />
             <ServerIcon>
               { encodedImage ? <IconPreview src={encodedImage} alt="Server icon" /> : "Add Icon" }
               <input type="file" name="image" onChange={handleInputChange} accept="image/jpeg, image/png" hidden/>
             </ServerIcon>
             { error && <p>{error}</p> }
-            <CreateButton>
+            <FormButton>
               { isLoading ? (
                 <Loader borderSize={4}/>
               ):(
                 "Create"
               )}
-            </CreateButton>
-          </ServerForm>
-        </div>
+            </FormButton>
+          </Form>
+        </ContentWrapper>
 
-        <div>
-          <h1>Or</h1>
-          <h3>Have a join code?</h3>
-          <form onSubmit={() => inviteUser(inviteCode)}>
-            <input type="text" value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} />
-            <button>Join</button>
-          </form>
-        </div>
-      </Modal>
+        <ContentWrapper>
+          <Header>
+            <h1>Or...</h1>
+            <h3>Have a join code?</h3>
+          </Header>
+          <Form onSubmit={inviteSubmitHandler}>
+            <TextInput type="text" placeholder="Join code..." value={inviteCode} onChange={(e) => setInviteCode(e.target.value)} />
+            <FormButton>
+              { inviteLoading ? (
+                <Loader borderSize={4}/>
+              ):(
+                "Join"
+              )}
+            </FormButton>
+          </Form>
+        </ContentWrapper>
+      </RowModal>
     )
   }
 )
 
-const ServerForm = styled.form`
+const RowModal = styled(Modal)`
+  flex-direction: row;
+`
+
+const ContentWrapper = styled.div`
+  width: 50%;
+`
+
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,14 +154,14 @@ const Header = styled.header`
   h1, h3 { margin: 5px 0; }
 
   h3 {
-    width: 60%;
+    width: 75%;
     text-align: center;
   }
 `
 
-const ServerName = styled.input`
+const TextInput = styled.input`
   height: 1.6rem;
-  width: 40%;
+  /* width: 40%; */
   font-size: 1.1rem;
   padding: 10px 20px;
   border-radius: 10px;
@@ -173,7 +202,7 @@ const IconPreview = styled.img`
   border-radius: 50%;
 `
 
-const CreateButton = styled.button`
+const FormButton = styled.button`
   height: 2em;
   display: flex;
   align-items: center;

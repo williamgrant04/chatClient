@@ -49,7 +49,7 @@ const Modal = forwardRef<Ref, React.PropsWithChildren<ModalProps>>(({ children, 
   }
 
   return (
-    <ModalWrapper isOpen={props.open || open} onRequestClose={closeHandler} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} $height={props.height} $width={props.width}>
+    <ModalWrapper isOpen={props.open || open} onRequestClose={closeHandler} style={{ overlay: { backgroundColor: "rgb(0, 0, 0, 0.5)", zIndex: 3 } }} $height={props.height} $width={props.width} {...props}>
       <CloseButton onClick={closeHandler}>
         <FontAwesomeIcon icon={faXmarkCircle} />
       </CloseButton>
@@ -60,7 +60,6 @@ const Modal = forwardRef<Ref, React.PropsWithChildren<ModalProps>>(({ children, 
 
 const ModalWrapper = styled(ReactModal)<{ $height?: string, $width?: string }>`
   outline: 0;
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
